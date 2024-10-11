@@ -1,4 +1,4 @@
-package com.cb.meapps
+package com.cb.meapps.presentation.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -11,45 +11,49 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme.colorScheme
-import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.cb.meapps.presentation.ui.common.Credit
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
+
+data class FinancialProjectionState(
+    val initialSavings: Double,
+    val annualInterestRate: Double,
+    val biweeklyPayment: Double,
+    val days: Int = 360,
+)
+
+
 @Composable
-fun FinancialProjection(
-    initialSavings: Double,
-    annualInterestRate: Double,
-    biweeklyPayment: Double,
-    days: Int = 360
+fun FinancialProjectionScreen(
+    state: FinancialProjectionState,
+    onCreditClicked: () -> Unit
 ) {
     val calendar = Calendar.getInstance()
-    var totalSavings = initialSavings
+    var totalSavings = state.initialSavings
     var accumulatedInterest = 0.0
 
     // Date formatter for "1 SEPT" format
     val dateFormat = SimpleDateFormat("d MMM", Locale("es", "ES"))
 
     // Convert annual interest rate from percentage to decimal
-    val annualInterestDecimal = annualInterestRate / 100.0
+    val annualInterestDecimal = state.annualInterestRate / 100.0
     // Calculate daily interest rate
     val dailyInterestRate = annualInterestDecimal / 360.0
 
     // Generate a list of ProjectionDay for the specified number of days
-    val projectionDays = (0..days).map { dayIndex ->
+    val projectionDays = (0..state.days).map { dayIndex ->
 
         val current = totalSavings
 
@@ -73,7 +77,7 @@ fun FinancialProjection(
 
         // Payment is made only if it's the 15th or 30th, regardless of weekends
         if (isPaymentDay) {
-            paymentToday = biweeklyPayment
+            paymentToday = state.biweeklyPayment
         }
 
         val dailyInterest = totalSavings * dailyInterestRate
@@ -97,7 +101,7 @@ fun FinancialProjection(
 
     Scaffold(
         bottomBar = {
-            Credit()
+            Credit(onCreditClicked)
         }
     ) { paddingValues ->
         Column(
@@ -105,7 +109,7 @@ fun FinancialProjection(
                 .padding(paddingValues)
                 .background(colorScheme.onTertiary)
         ) {
-            CurrentSavingState(initialSavings)
+            CurrentSavingState(state.initialSavings)
             ProjectionHeader()
             Column(
                 Modifier.fillMaxWidth()
@@ -173,22 +177,6 @@ private fun CurrentSavingState(initialSavings: Double) {
 }
 
 @Composable
-private fun Credit() {
-    Column {
-        Box(modifier = Modifier.fillMaxWidth().height(1.dp).background(Color.Black.copy(alpha = 0.2f)))
-        Text(
-            text = "Made w/ ❤\uFE0F\uD83C\uDF2E by Carlos Bedoy",
-            Modifier
-                .background(colorScheme.onPrimary)
-                .fillMaxWidth()
-                .padding(16.dp),
-            color = colorScheme.primary,
-            textAlign = TextAlign.Center
-        )
-    }
-}
-
-@Composable
 private fun ProjectionRow(projectionDay: ProjectionDay) {
     Column {
         ProjectionRowDivider(projectionDay)
@@ -238,7 +226,8 @@ private fun ProjectionRowDivider(projectionDay: ProjectionDay) {
 private fun PreviewProjectionRow() {
     Surface {
         Column {
-            ProjectionRow(ProjectionDay(
+            ProjectionRow(
+                ProjectionDay(
                 "1 Sept 2024",
                 "100.00",
                 "100.00",
@@ -246,8 +235,10 @@ private fun PreviewProjectionRow() {
                 "200.20",
                 "20202.00",
                 true
-            ))
-            ProjectionRow(ProjectionDay(
+            )
+            )
+            ProjectionRow(
+                ProjectionDay(
                 "1 Sept 2024",
                 "100.00",
                 "100.00",
@@ -255,7 +246,8 @@ private fun PreviewProjectionRow() {
                 "200.20",
                 "20202.00",
                 false
-            ))
+            )
+            )
         }
     }
 }
@@ -264,10 +256,13 @@ private fun PreviewProjectionRow() {
 @Composable
 fun PreviewFinancialProjection() {
     Surface {
-        FinancialProjection(
-            initialSavings = 100000.00,
-            annualInterestRate = 12.5,
-            biweeklyPayment = 37500.00
+        FinancialProjectionScreen(
+            state = FinancialProjectionState(
+                initialSavings = 100000.00,
+                annualInterestRate = 12.5,
+                biweeklyPayment = 37500.00,
+            ),
+            onCreditClicked = {}
         )
     }
 }

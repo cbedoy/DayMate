@@ -1,31 +1,39 @@
-package com.cb.meapps
+package com.cb.meapps.presentation.view
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.cb.meapps.ui.theme.MeAppsTheme
+import com.cb.meapps.presentation.ui.DayMateContainer
+import com.cb.meapps.presentation.viewmodel.settings.SettingsViewModel
+import com.cb.meapps.presentation.ui.theme.MeAppsTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    private val settingsViewModel: SettingsViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             MeAppsTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    FinancialProjection(
-                        initialSavings = 100000.00,
-                        annualInterestRate = 12.5,
-                        biweeklyPayment = 37500.00
+                    val settingsState by settingsViewModel.state.collectAsState()
+
+
+                    DayMateContainer(
+                        settingsState,
+                        onSettingsAction = { settingsViewModel::dispatch }
                     )
                 }
             }
