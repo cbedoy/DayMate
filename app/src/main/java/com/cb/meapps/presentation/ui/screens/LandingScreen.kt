@@ -20,6 +20,8 @@ import com.cb.meapps.presentation.ui.common.Credit
 fun LandingScreen(
     onFinancialProjectionClick: () -> Unit,
     onSettingsClicked: () -> Unit,
+    onDocsClicked: () -> Unit,
+    onOnboardingClicked: () -> Unit,
     onCreditClicked: () -> Unit
 ) {
     Scaffold(
@@ -30,11 +32,18 @@ fun LandingScreen(
         Box(modifier = Modifier.padding(paddingValues).fillMaxHeight(), contentAlignment = Alignment.Center) {
             LazyColumn(Modifier.padding(paddingValues)) {
                 item {
+                    LandingItem(onDocsClicked, "Documents")
+                }
+                item {
                     LandingItem(onFinancialProjectionClick, "Financial Projection")
+                }
+                item {
+                    LandingItem(onOnboardingClicked, "Onboarding")
                 }
                 item {
                     LandingItem(onSettingsClicked, "Settings")
                 }
+
             }
         }
     }
@@ -57,7 +66,9 @@ private fun PreviewLandingScreen() {
         LandingScreen(
             onFinancialProjectionClick = {},
             onSettingsClicked = {},
-            onCreditClicked = {}
+            onCreditClicked = {},
+            onDocsClicked = {},
+            onOnboardingClicked = {}
         )
     }
 }

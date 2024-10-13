@@ -11,14 +11,16 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.cb.meapps.presentation.ui.DayMateContainer
-import com.cb.meapps.presentation.viewmodel.settings.SettingsViewModel
 import com.cb.meapps.presentation.ui.theme.MeAppsTheme
+import com.cb.meapps.presentation.viewmodel.BureaucraticDocsViewModel
+import com.cb.meapps.presentation.viewmodel.settings.SettingsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private val settingsViewModel: SettingsViewModel by viewModels()
+    private val bureaucraticDocsViewModel: BureaucraticDocsViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,10 +31,11 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val settingsState by settingsViewModel.state.collectAsState()
-
+                    val documentsState by bureaucraticDocsViewModel.state.collectAsState()
 
                     DayMateContainer(
                         settingsState,
+                        documentsState,
                         onSettingsAction = { settingsViewModel::dispatch }
                     )
                 }
