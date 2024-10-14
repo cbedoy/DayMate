@@ -46,7 +46,7 @@ fun FinancialProjectionScreen(
     var accumulatedInterest = 0.0
 
     // Date formatter for "1 SEPT" format
-    val dateFormat = SimpleDateFormat("d MMM", Locale("es", "ES"))
+    val dateFormat = SimpleDateFormat("d MMM", Locale.getDefault())
 
     // Convert annual interest rate from percentage to decimal
     val annualInterestDecimal = state.annualInterestRate / 100.0
@@ -113,7 +113,6 @@ fun FinancialProjectionScreen(
                 .padding(paddingValues)
                 .background(colorScheme.onTertiary)
         ) {
-            CurrentSavingState(state.initialSavings)
             ProjectionHeader()
             Column(
                 Modifier.fillMaxWidth()
@@ -165,20 +164,6 @@ private fun RowScope.ProjectionHeaderText(text: String) = Text(
     fontWeight = FontWeight.SemiBold,
     fontSize = 10.sp
 )
-
-@Composable
-private fun CurrentSavingState(initialSavings: Double) {
-    Text(
-        text = "Current saving: ${initialSavings.asMoney()}".uppercase(),
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(colorScheme.onBackground)
-            .padding(8.dp),
-        color = colorScheme.onPrimary,
-        fontWeight = FontWeight.Normal,
-        fontSize = 18.sp
-    )
-}
 
 @Composable
 private fun ProjectionRow(projectionDay: ProjectionDay) {

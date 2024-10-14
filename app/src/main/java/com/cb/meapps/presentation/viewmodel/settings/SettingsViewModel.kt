@@ -2,6 +2,7 @@ package com.cb.meapps.presentation.viewmodel.settings
 
 import androidx.lifecycle.ViewModel
 import com.cb.meapps.data.PreferencesDelegate
+import com.cb.meapps.domain.model.Card
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -59,7 +60,8 @@ data class SettingsState(
     val initialSavings: String = "",
     val annualInterestRate: String = "",
     val biweeklyPayment: String = "",
-    val skipOnboarding: Boolean = false
+    val skipOnboarding: Boolean = false,
+    val cards: List<Card> = emptyList()
 )
 
 sealed class SettingsAction {
