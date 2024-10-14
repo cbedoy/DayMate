@@ -76,7 +76,8 @@ private fun PreviewLandingScreen() {
             onSettingsClicked = {},
             onCreditClicked = {},
             onDocsClicked = {},
-            onOnboardingClicked = {}
+            onOnboardingClicked = {},
+            onCardPaymentCalendar = {}
         )
     }
 }
