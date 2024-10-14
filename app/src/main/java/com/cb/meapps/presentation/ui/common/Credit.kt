@@ -30,9 +30,9 @@ internal fun Credit(
                 .background(MaterialTheme.colorScheme.onPrimary)
                 .fillMaxWidth()
                 .padding(16.dp),
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.SemiBold,
             color = MaterialTheme.colorScheme.primary,
-            textAlign = TextAlign.Center,
-            fontWeight = FontWeight.Light
         )
     }
 }

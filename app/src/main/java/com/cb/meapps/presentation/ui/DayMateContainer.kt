@@ -1,5 +1,6 @@
 package com.cb.meapps.presentation.ui
 
+import android.content.Intent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
@@ -19,6 +20,7 @@ import com.cb.meapps.presentation.viewmodel.settings.SettingsState
 fun DayMateContainer(
     settingsState: SettingsState,
     docsState: DocsState,
+    onCreditClicked : () -> Unit,
     onSettingsAction: (SettingsAction) -> Unit
 ) {
 
@@ -34,13 +36,18 @@ fun DayMateContainer(
         navController.navigate(DayMateRoutes.Docs.route)
     }
     val onOnboardingCompleted = {
+        onSettingsAction(SettingsAction.SkipOnboarding)
+
         navController.navigate(DayMateRoutes.Landing.route)
     }
-    val onCreditClicked = {
 
+    val initialRoute = if (settingsState.skipOnboarding) {
+        DayMateRoutes.Landing.route
+    } else {
+        DayMateRoutes.Onboarding.route
     }
 
-    NavHost(navController, startDestination = DayMateRoutes.Onboarding.route, Modifier) {
+    NavHost(navController, startDestination = initialRoute, Modifier) {
         composable(DayMateRoutes.Landing.route) {
             LandingScreen(
                 onFinancialProjectionClick = onFinancialProjectionClick,
@@ -64,8 +71,8 @@ fun DayMateContainer(
             FinancialProjectionScreen(
                 state = FinancialProjectionState(
                     initialSavings = settingsState.initialSavings.toDoubleOrZero(),
-                    annualInterestRate = settingsState.initialSavings.toDoubleOrZero(),
-                    biweeklyPayment = settingsState.initialSavings.toDoubleOrZero(),
+                    annualInterestRate = settingsState.annualInterestRate.toDoubleOrZero(),
+                    biweeklyPayment = settingsState.biweeklyPayment.toDoubleOrZero(),
                 ),
                 onCreditClicked = onCreditClicked
             )

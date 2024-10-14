@@ -1,5 +1,7 @@
 package com.cb.meapps.presentation.view
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -10,6 +12,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import com.cb.meapps.presentation.ui.DayMateContainer
 import com.cb.meapps.presentation.ui.theme.MeAppsTheme
 import com.cb.meapps.presentation.viewmodel.BureaucraticDocsViewModel
@@ -32,11 +35,18 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val settingsState by settingsViewModel.state.collectAsState()
                     val documentsState by bureaucraticDocsViewModel.state.collectAsState()
+                    val context = LocalContext.current
 
                     DayMateContainer(
                         settingsState,
                         documentsState,
-                        onSettingsAction = { settingsViewModel::dispatch }
+                        onCreditClicked = {
+                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.linkedin.com/in/carlos-cervantes-bedoy-34248187/"))
+                            context.startActivity(intent)
+                        },
+                        onSettingsAction = {
+                            settingsViewModel.dispatch(it)
+                        }
                     )
                 }
             }

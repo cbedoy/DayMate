@@ -19,7 +19,8 @@ class SettingsViewModel @Inject constructor(
         SettingsState(
             initialSavings = preferencesDelegate.getInitialSavings(),
             annualInterestRate = preferencesDelegate.getAnnualInterestRate(),
-            biweeklyPayment = preferencesDelegate.getBiweeklyPayment()
+            biweeklyPayment = preferencesDelegate.getBiweeklyPayment(),
+            skipOnboarding = preferencesDelegate.isSkipOnboarding()
         )
     )
     val state: StateFlow<SettingsState> = _state.asStateFlow()
@@ -44,6 +45,12 @@ class SettingsViewModel @Inject constructor(
                 }
                 preferencesDelegate.saveBiweeklyPayment(action.newValue)
             }
+            SettingsAction.SkipOnboarding -> {
+                _state.update { currentState ->
+                    currentState.copy(skipOnboarding = true)
+                }
+                preferencesDelegate.saveSkipOnboarding()
+            }
         }
     }
 }
@@ -51,11 +58,13 @@ class SettingsViewModel @Inject constructor(
 data class SettingsState(
     val initialSavings: String = "",
     val annualInterestRate: String = "",
-    val biweeklyPayment: String = ""
+    val biweeklyPayment: String = "",
+    val skipOnboarding: Boolean = false
 )
 
 sealed class SettingsAction {
     data class ChangeInitialSavings(val newValue: String) : SettingsAction()
     data class ChangeAnnualInterestRate(val newValue: String) : SettingsAction()
     data class ChangeBiweeklyPayment(val newValue: String) : SettingsAction()
+    data object SkipOnboarding : SettingsAction()
 }

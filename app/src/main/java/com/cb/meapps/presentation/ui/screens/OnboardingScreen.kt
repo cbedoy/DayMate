@@ -1,5 +1,6 @@
 package com.cb.meapps.presentation.ui.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,7 +36,7 @@ fun OnboardingScreen(
     }
 
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.onPrimary),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -97,8 +98,18 @@ private fun OnboardingPage(page: OnboardingPage) {
         Column(
             Modifier.fillMaxWidth()
         ) {
-            Text(text = page.title, style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Black)
-            Text(text = page.subtitle, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Light)
+            Text(
+                text = page.title,
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Black,
+                color = MaterialTheme.colorScheme.primary
+            )
+            Text(
+                text = page.subtitle,
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Light,
+                color = MaterialTheme.colorScheme.secondary
+            )
         }
     }
 }

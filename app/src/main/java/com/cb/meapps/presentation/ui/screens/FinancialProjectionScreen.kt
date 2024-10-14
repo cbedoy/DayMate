@@ -21,6 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.cb.meapps.presentation.ui.common.CommonTopAppBar
 import com.cb.meapps.presentation.ui.common.Credit
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -100,6 +101,9 @@ fun FinancialProjectionScreen(
     }
 
     Scaffold(
+        topBar = {
+            CommonTopAppBar(title = "Your Future in Numbers")
+        },
         bottomBar = {
             Credit(onCreditClicked)
         }

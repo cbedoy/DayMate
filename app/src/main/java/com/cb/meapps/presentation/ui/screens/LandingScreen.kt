@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.cb.meapps.presentation.ui.common.CommonTopAppBar
 import com.cb.meapps.presentation.ui.common.Credit
 
 @Composable
@@ -25,6 +26,9 @@ fun LandingScreen(
     onCreditClicked: () -> Unit
 ) {
     Scaffold(
+        topBar = {
+            CommonTopAppBar(title = "Day Mate")
+        },
         bottomBar = {
             Credit(onCreditClicked)
         }

@@ -39,11 +39,20 @@ class PreferencesDelegate @Inject constructor(
         getPreferences().edit().putString(BIWEEKLY_PAYMENT_KEY, value).apply()
     }
 
+    fun saveSkipOnboarding() {
+        getPreferences().edit().putBoolean(SKIP_ONBOARDING, true).apply()
+    }
+
+    fun isSkipOnboarding(): Boolean {
+        return getPreferences().getBoolean(SKIP_ONBOARDING, false)
+    }
+
     companion object {
         private const val PREFERENCES_FILE_KEY = "com.cb.daymate"
         private const val INITIAL_SAVINGS_KEY = "initial_savings"
         private const val ANNUAL_INTEREST_RATE_KEY = "annual_interest_rate"
         private const val BIWEEKLY_PAYMENT_KEY = "biweekly_payment"
+        private const val SKIP_ONBOARDING = "skip_onboarding"
 
     }
 }
