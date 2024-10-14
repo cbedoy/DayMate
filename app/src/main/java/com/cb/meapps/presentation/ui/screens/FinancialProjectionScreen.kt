@@ -16,6 +16,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -23,80 +24,26 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cb.meapps.presentation.ui.common.CommonTopAppBar
 import com.cb.meapps.presentation.ui.common.Credit
+import com.cb.meapps.presentation.viewmodel.financial.FinancialProjectionState
+import com.cb.meapps.presentation.viewmodel.settings.SettingsState
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
-
-data class FinancialProjectionState(
-    val initialSavings: Double,
-    val annualInterestRate: Double,
-    val biweeklyPayment: Double,
-    val days: Int = 360,
-)
-
+typealias OnCalculateFinancialProjection = (initialSavings: Double, annualInterestRate: Double, biweeklyPayment: Double) -> Unit
 
 @Composable
 fun FinancialProjectionScreen(
-    state: FinancialProjectionState,
+    settingsState: SettingsState,
+    financialProjectionState: FinancialProjectionState,
+    onCalculateFinancialProjection: OnCalculateFinancialProjection,
     onCreditClicked: () -> Unit
 ) {
-    val calendar = Calendar.getInstance()
-    var totalSavings = state.initialSavings
-    var accumulatedInterest = 0.0
-
-    // Date formatter for "1 SEPT" format
-    val dateFormat = SimpleDateFormat("d MMM", Locale.getDefault())
-
-    // Convert annual interest rate from percentage to decimal
-    val annualInterestDecimal = state.annualInterestRate / 100.0
-    // Calculate daily interest rate
-    val dailyInterestRate = annualInterestDecimal / 360.0
-
-    // Generate a list of ProjectionDay for the specified number of days
-    val projectionDays = (0..state.days).map { dayIndex ->
-
-        val current = totalSavings
-
-        val newCal = calendar.clone() as Calendar
-        newCal.add(Calendar.DAY_OF_YEAR, dayIndex)
-
-        val dayOfMonth = newCal.get(Calendar.DAY_OF_MONTH)
-        var paymentToday = 0.0
-
-        val month = calendar.get(Calendar.MONTH) + 1
-
-        val isLastDayOfFebruary = if (month == Calendar.FEBRUARY) {
-            val lastDayOfFebruary = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
-            dayOfMonth == lastDayOfFebruary
-        } else {
-            false
-        }
-
-        // Check if today is the 15th or 30th or if today is the last day of feb
-        val isPaymentDay = (dayOfMonth == 15 || dayOfMonth == 30 || isLastDayOfFebruary)
-
-        // Payment is made only if it's the 15th or 30th, regardless of weekends
-        if (isPaymentDay) {
-            paymentToday = state.biweeklyPayment
-        }
-
-        val dailyInterest = totalSavings * dailyInterestRate
-        accumulatedInterest += dailyInterest
-        totalSavings += paymentToday + dailyInterest
-
-        // Format the date using SimpleDateFormat
-        val formattedDate = dateFormat.format(newCal.time).uppercase()
-
-        // Create a ProjectionDay instance
-        ProjectionDay(
-            date = formattedDate,
-            current = current.asMoney(),
-            paymentToday = paymentToday.asMoney(),
-            dailyInterest = dailyInterest.asMoney(),
-            accumulatedInterest = accumulatedInterest.asMoney(),
-            totalSavings = totalSavings.asMoney(),
-            isPaymentDay = isPaymentDay
+    LaunchedEffect(Unit){
+        onCalculateFinancialProjection(
+            settingsState.initialSavings.toDoubleOrZero(),
+            settingsState.annualInterestRate.toDoubleOrZero(),
+            settingsState.biweeklyPayment.toDoubleOrZero()
         )
     }
 
@@ -111,7 +58,6 @@ fun FinancialProjectionScreen(
         Column(
             Modifier
                 .padding(paddingValues)
-                .background(colorScheme.onTertiary)
         ) {
             ProjectionHeader()
             Column(
@@ -119,7 +65,7 @@ fun FinancialProjectionScreen(
             ) {
                 // Use LazyColumn to display the list
                 LazyColumn {
-                    items(projectionDays) { projectionDay ->
+                    items(financialProjectionState.projectionDays) { projectionDay ->
                         ProjectionRow(projectionDay = projectionDay)
                     }
                 }
@@ -246,14 +192,14 @@ private fun PreviewProjectionRow() {
 fun PreviewFinancialProjection() {
     Surface {
         FinancialProjectionScreen(
-            state = FinancialProjectionState(
-                initialSavings = 100000.00,
-                annualInterestRate = 12.5,
-                biweeklyPayment = 37500.00,
-            ),
+            settingsState = SettingsState(),
+            financialProjectionState = FinancialProjectionState(),
+            onCalculateFinancialProjection = {_, _, _ -> },
             onCreditClicked = {}
         )
     }
 }
 
-private fun Double.asMoney() = "\$${String.format("%,.0f", this)}"
+private fun String.toDoubleOrZero(): Double {
+    return this.toDoubleOrNull() ?: 0.0
+}

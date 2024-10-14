@@ -10,11 +10,12 @@ import com.cb.meapps.presentation.ui.screens.AddCardScreen
 import com.cb.meapps.presentation.ui.screens.CardPaymentCalendarScreen
 import com.cb.meapps.presentation.ui.screens.DocsScreen
 import com.cb.meapps.presentation.ui.screens.FinancialProjectionScreen
-import com.cb.meapps.presentation.ui.screens.FinancialProjectionState
 import com.cb.meapps.presentation.ui.screens.LandingScreen
+import com.cb.meapps.presentation.ui.screens.OnCalculateFinancialProjection
 import com.cb.meapps.presentation.ui.screens.OnboardingScreen
 import com.cb.meapps.presentation.ui.screens.SettingsScreen
 import com.cb.meapps.presentation.viewmodel.DocsState
+import com.cb.meapps.presentation.viewmodel.financial.FinancialProjectionState
 import com.cb.meapps.presentation.viewmodel.settings.SettingsAction
 import com.cb.meapps.presentation.viewmodel.settings.SettingsState
 
@@ -22,6 +23,8 @@ import com.cb.meapps.presentation.viewmodel.settings.SettingsState
 fun DayMateContainer(
     settingsState: SettingsState,
     docsState: DocsState,
+    financialProjectionState: FinancialProjectionState,
+    onCalculateFinancialProjection: OnCalculateFinancialProjection,
     onCreditClicked : () -> Unit,
     onSettingsAction: (SettingsAction) -> Unit
 ) {
@@ -77,7 +80,7 @@ fun DayMateContainer(
                 onCreditClicked = onCreditClicked,
                 onDocsClicked = onDocsClicked,
                 onOnboardingClicked = onOnboardingCompleted,
-                onCardPaymentCalendar = onCardPaymentCalendar
+                onCardPaymentCalendarClicked = onCardPaymentCalendar
             )
         }
         composable(DayMateRoute.Onboarding.route) {
@@ -98,11 +101,9 @@ fun DayMateContainer(
         }
         composable(DayMateRoute.FinancialProjection.route) {
             FinancialProjectionScreen(
-                state = FinancialProjectionState(
-                    initialSavings = settingsState.initialSavings.toDoubleOrZero(),
-                    annualInterestRate = settingsState.annualInterestRate.toDoubleOrZero(),
-                    biweeklyPayment = settingsState.biweeklyPayment.toDoubleOrZero(),
-                ),
+                settingsState,
+                financialProjectionState = financialProjectionState,
+                onCalculateFinancialProjection = onCalculateFinancialProjection,
                 onCreditClicked = onCreditClicked
             )
         }

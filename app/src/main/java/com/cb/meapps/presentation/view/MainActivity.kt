@@ -16,6 +16,7 @@ import androidx.compose.ui.platform.LocalContext
 import com.cb.meapps.presentation.ui.DayMateContainer
 import com.cb.meapps.presentation.ui.theme.MeAppsTheme
 import com.cb.meapps.presentation.viewmodel.BureaucraticDocsViewModel
+import com.cb.meapps.presentation.viewmodel.financial.FinancialProjectionViewModel
 import com.cb.meapps.presentation.viewmodel.settings.SettingsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -24,6 +25,7 @@ class MainActivity : ComponentActivity() {
 
     private val settingsViewModel: SettingsViewModel by viewModels()
     private val bureaucraticDocsViewModel: BureaucraticDocsViewModel by viewModels()
+    private val financialProjectionViewModel: FinancialProjectionViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,11 +37,20 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val settingsState by settingsViewModel.state.collectAsState()
                     val documentsState by bureaucraticDocsViewModel.state.collectAsState()
+                    val financialProjectionState by financialProjectionViewModel.state.collectAsState()
                     val context = LocalContext.current
 
                     DayMateContainer(
                         settingsState,
                         documentsState,
+                        financialProjectionState,
+                        onCalculateFinancialProjection = { initialSavings, annualInterestRate, biweeklyRate ->
+                            financialProjectionViewModel.calculateProjections(
+                                initialSavings,
+                                annualInterestRate,
+                                biweeklyRate
+                            )
+                        },
                         onCreditClicked = {
                             val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.linkedin.com/in/carlos-cervantes-bedoy-34248187/"))
                             context.startActivity(intent)

@@ -22,7 +22,7 @@ fun LandingScreen(
     onFinancialProjectionClick: () -> Unit,
     onSettingsClicked: () -> Unit,
     onDocsClicked: () -> Unit,
-    onCardPaymentCalendar: () -> Unit,
+    onCardPaymentCalendarClicked: () -> Unit,
     onOnboardingClicked: () -> Unit,
     onCreditClicked: () -> Unit
 ) {
@@ -43,7 +43,7 @@ fun LandingScreen(
                     LandingItem(onFinancialProjectionClick, "Financial Projection")
                 }
                 item {
-                    LandingItem(onCardPaymentCalendar, "Card Payment Calendar")
+                    LandingItem(onCardPaymentCalendarClicked, "Card Payment Calendar")
                 }
                 item {
                     LandingItem(onOnboardingClicked, "Onboarding")
@@ -77,7 +77,7 @@ private fun PreviewLandingScreen() {
             onCreditClicked = {},
             onDocsClicked = {},
             onOnboardingClicked = {},
-            onCardPaymentCalendar = {}
+            onCardPaymentCalendarClicked = {}
         )
     }
 }
