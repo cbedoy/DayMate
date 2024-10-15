@@ -1,19 +1,26 @@
 package com.cb.meapps.presentation.viewmodel.settings
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.cb.meapps.data.PreferencesDelegate
+import com.cb.meapps.domain.fake.getFakeCards
 import com.cb.meapps.domain.model.Card
+import com.cb.meapps.domain.usecase.AddNewCardUseCase
+import com.cb.meapps.domain.usecase.GetCardsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    private val preferencesDelegate: PreferencesDelegate
+    private val preferencesDelegate: PreferencesDelegate,
+    private val addNewCardUseCase: AddNewCardUseCase,
+    private val getCardsUseCase: GetCardsUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(
@@ -25,6 +32,16 @@ class SettingsViewModel @Inject constructor(
         )
     )
     val state: StateFlow<SettingsState> = _state.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            getCardsUseCase().collect { cards ->
+                _state.update { currentState ->
+                    currentState.copy(cards = cards)
+                }
+            }
+        }
+    }
 
     fun dispatch(action: SettingsAction) {
         when (action) {
@@ -52,6 +69,15 @@ class SettingsViewModel @Inject constructor(
                 }
                 preferencesDelegate.saveSkipOnboarding()
             }
+
+            is SettingsAction.AddNewCard -> {
+                viewModelScope.launch {
+                    _state.update { currentState ->
+                        currentState.copy(loading = true)
+                    }
+                    addNewCardUseCase(action.name, action.cutOffDate, action.dueDate)
+                }
+            }
         }
     }
 }
@@ -61,12 +87,16 @@ data class SettingsState(
     val annualInterestRate: String = "",
     val biweeklyPayment: String = "",
     val skipOnboarding: Boolean = false,
-    val cards: List<Card> = emptyList()
+    val cards: List<Card> = getFakeCards(),
+    val loading: Boolean = false
 )
 
 sealed class SettingsAction {
     data class ChangeInitialSavings(val newValue: String) : SettingsAction()
     data class ChangeAnnualInterestRate(val newValue: String) : SettingsAction()
     data class ChangeBiweeklyPayment(val newValue: String) : SettingsAction()
+    data class AddNewCard(val name: String,
+                          val cutOffDate: Int,
+                          val dueDate: Int) : SettingsAction()
     data object SkipOnboarding : SettingsAction()
 }

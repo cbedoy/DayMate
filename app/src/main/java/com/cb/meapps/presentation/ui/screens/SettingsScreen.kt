@@ -3,28 +3,30 @@ package com.cb.meapps.presentation.ui.screens
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.cb.meapps.R
+import com.cb.meapps.domain.fake.getFakeCards
 import com.cb.meapps.domain.model.Card
 import com.cb.meapps.presentation.ui.common.CommonInputField
 import com.cb.meapps.presentation.ui.common.CommonTopAppBar
@@ -37,6 +39,7 @@ import com.cb.meapps.presentation.viewmodel.settings.SettingsState
 @Composable
 fun SettingsScreen(
     settingsState: SettingsState,
+    onFinancialProjectionClicked: () -> Unit,
     onAddNewCardClicked: () -> Unit,
     onAction: (SettingsAction) -> Unit,
     onCreditClicked: () -> Unit
@@ -63,7 +66,7 @@ fun SettingsScreen(
                     label = "Initial savings",
                     placeholder = "$100,000",
                     currentValue = settingsState.initialSavings,
-                    inputType = InputType.NUMBER,
+                    inputType = InputType.Number,
                     onValueChange = {
                         onAction(SettingsAction.ChangeInitialSavings(it))
                     }
@@ -74,7 +77,7 @@ fun SettingsScreen(
                     label = "Annual interest rate",
                     placeholder = "15.45%",
                     currentValue = settingsState.annualInterestRate,
-                    inputType = InputType.NUMBER,
+                    inputType = InputType.Decimal,
                     onValueChange = {
                         onAction(SettingsAction.ChangeAnnualInterestRate(it))
                     }
@@ -85,11 +88,19 @@ fun SettingsScreen(
                     label = "Biweekly payment",
                     placeholder = "$12345",
                     currentValue = settingsState.biweeklyPayment,
-                    inputType = InputType.NUMBER,
+                    inputType = InputType.Number,
                     onValueChange = {
                         onAction(SettingsAction.ChangeBiweeklyPayment(it))
                     }
                 )
+            }
+            item {
+                OutlinedButton(onFinancialProjectionClicked,
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)) {
+                    Text(text = "Open Financial projection")
+                }
             }
             item {
                 SettingsCardHeadline(settingsState.cards, onAddNewCardClicked)
@@ -113,18 +124,20 @@ private fun SettingsSwitchHeadline(checked: Boolean) {
     ) {
         Text(
             text = "Never Miss a Payment Again!",
-            style = MaterialTheme.typography.bodySmall,
+            style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.SemiBold,
             color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.padding(horizontal = 16.dp)
         )
         Row(
-            Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(
                 text = "Turn on reminders to get notified before your due date and keep those pesky late fees away. With automatic alerts, you'll always be on top of your payments, and you'll even see a countdown so you know exactly how many days you have left. Stay worry-free and let us do the remembering for you! \uD83D\uDCC5\uD83D\uDD14",
-                style = MaterialTheme.typography.bodySmall,
+                style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.Light,
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.weight(1.0f)
@@ -160,18 +173,27 @@ private fun SettingsCardHeadline(cards: List<Card>, addNewCard: () -> Unit) {
         ) {
             Text(
                 text = title,
-                style = MaterialTheme.typography.bodySmall,
+                style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
             Text(
                 text = subtitle,
-                style = MaterialTheme.typography.bodySmall,
+                style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.Light,
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
+            if (cards.isEmpty()) {
+                EmptyDataNoCards()
+            } else {
+                Column {
+                    cards.forEach {
+                        SettingsCardPreview(it)
+                    }
+                }
+            }
             OutlinedButton(addNewCard,
                 Modifier
                     .fillMaxWidth()
@@ -182,46 +204,77 @@ private fun SettingsCardHeadline(cards: List<Card>, addNewCard: () -> Unit) {
     }
 }
 
+@Composable
+private fun EmptyDataNoCards() {
+    Text(
+        text = "No cards...",
+        style = MaterialTheme.typography.bodyLarge,
+        fontWeight = FontWeight.Light,
+        color = MaterialTheme.colorScheme.primary,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        textAlign = TextAlign.Center
+    )
+}
+
+@Composable
+private fun SettingsCardPreview(card: Card) {
+    Row(
+        Modifier.padding(horizontal = 16.dp),
+        Arrangement.Center,
+        Alignment.CenterVertically
+    ) {
+        Text(
+            text = card.name,
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.Medium,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier
+                .weight(1.0f)
+        )
+        Column {
+            Text(
+                text = "Due date ${card.dueDate}",
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Light,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
+            Text(
+                text = "Cut off date ${card.cutOffDate}",
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Light,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
+        }
+        Icon(
+            painter = painterResource(id = R.drawable.baseline_navigate_next_24),
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.primary
+        )
+    }
+}
+
 @Preview
 @Composable
 private fun PreviewNoCardView() {
     Surface {
         Column {
             SettingsCardHeadline(cards = emptyList(), {})
-            SettingsCardHeadline(cards = mockCards.take(1), {})
-            SettingsCardHeadline(cards = mockCards, {})
+            SettingsCardHeadline(cards = getFakeCards().take(1), {})
+            SettingsCardHeadline(cards = getFakeCards()) {}
         }
     }
 }
-
-private val mockCards = listOf(
-    Card(
-        name = "VISA Platinum",
-        cutOffDate = 15,
-        dueDate = 25
-    ),
-    Card(
-        name = "MasterCard Gold",
-        cutOffDate = 15,
-        dueDate = 25
-    ),
-    Card(
-        name = "American Express",
-        cutOffDate = 15,
-        dueDate = 25
-    ),
-    Card(
-        name = "Discover",
-        cutOffDate = 15,
-        dueDate = 25
-    )
-)
 
 @Preview
 @Composable
 private fun PreviewSettingsScreen() {
     SettingsScreen(
         settingsState = SettingsState(),
+        onFinancialProjectionClicked = {},
         onAction = {},
         onCreditClicked = {},
         onAddNewCardClicked = {}

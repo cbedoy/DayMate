@@ -12,12 +12,15 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.cb.meapps.R
+import com.cb.meapps.domain.fake.getFakeCards
 import com.cb.meapps.domain.model.Card
 import com.cb.meapps.presentation.ui.common.CommonTopAppBar
 import com.cb.meapps.presentation.ui.common.Credit
@@ -32,10 +35,11 @@ fun CardPaymentCalendarScreen(
     onCreditClicked: () -> Unit
 ) {
     val generateNextDays = generateNextDays(360)
+    val datesGroupedByMonth = generateNextDays.groupBy { it.monthName + " " + it.year }
 
     Scaffold(
         topBar = {
-            CommonTopAppBar(title = "Your Future in Numbers")
+            CommonTopAppBar(title = stringResource(R.string.card_payment_calendar_title))
         },
         bottomBar = {
             Credit(onCreditClicked)
@@ -51,15 +55,39 @@ fun CardPaymentCalendarScreen(
             ) {
                 // Use LazyColumn to display the list
                 LazyColumn {
-                    items(generateNextDays) { date ->
-                        val cardsDueToday = settingsState.cards.filter {
-                            card -> card.dueDate == date.split(" ").first().toIntOrNull()
+                    datesGroupedByMonth.forEach { (monthYear, datesInMonth) ->
+
+                        item {
+                            MonthHeader(monthYear)
                         }
-                        PaymentItem(date, cardsDueToday)
+
+                        items(datesInMonth) { dateInfo ->
+                            val cardsDueToday = settingsState.cards.filter { card ->
+                                card.dueDate == dateInfo.day
+                            }
+                            PaymentItem(dateInfo.date, cardsDueToday)
+                        }
                     }
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun MonthHeader(monthYear: String) {
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.tertiaryContainer)
+            .padding(16.dp)
+    ) {
+        Text(
+            text = monthYear.uppercase(),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.tertiary,
+            fontWeight = FontWeight.SemiBold
+        )
     }
 }
 
@@ -91,61 +119,63 @@ fun PaymentItem(date: String, cardsDueToday: List<Card>) {
             val cardNames = cardsDueToday.joinToString(", ") { it.name }
             Text(
                 text = buildAnnotatedString {
-                    append("Pay ")
+                    append(stringResource(R.string.common_pay))
                     withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
                         append(cardNames)
                     }
-                    append(" this day!")
+                    append(stringResource(R.string.comon_pay_this_day))
                 },
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onPrimary
             )
         } else {
-            Text(text = "No payments due today.", style = MaterialTheme.typography.bodySmall)
+            Text(text = stringResource(R.string.card_payment_calendar_no_payments_due), style = MaterialTheme.typography.bodySmall)
         }
     }
 }
 
-fun generateNextDays(days: Int = 360): List<String> {
+private fun generateNextDays(days: Int = 360): List<DateInfo> {
     val dateFormat = SimpleDateFormat("dd MMM", Locale.getDefault())
+    val monthFormat = SimpleDateFormat("MMMM", Locale.getDefault())
     val currentDate = Calendar.getInstance()
-    val dates = mutableListOf<String>()
+    val dates = mutableListOf<DateInfo>()
 
     for (i in 0 until days) {
-        dates.add(dateFormat.format(currentDate.time).uppercase())
+        val dateString = dateFormat.format(currentDate.time).uppercase()
+        val day = currentDate.get(Calendar.DAY_OF_MONTH)
+        val month = currentDate.get(Calendar.MONTH) + 1 // Enero es 0, por eso sumamos 1
+        val monthName = monthFormat.format(currentDate.time)
+        val year = currentDate.get(Calendar.YEAR)
+
+        dates.add(
+            DateInfo(
+                date = dateString,
+                day = day,
+                month = month,
+                monthName = monthName,
+                year = year
+            )
+        )
         currentDate.add(Calendar.DAY_OF_YEAR, 1)
     }
 
     return dates
 }
 
+private data class DateInfo(
+    val date: String,
+    val day: Int,
+    val month: Int,
+    val monthName: String,
+    val year: Int
+)
+
 @Preview
 @Composable
 private fun PreviewCardPaymentCalenderScreen() {
     CardPaymentCalendarScreen(
         settingsState = SettingsState(
-            cards = listOf(
-                Card(
-                    name = "VISA Platinum",
-                    cutOffDate = 7,
-                    dueDate = 25
-                ),
-                Card(
-                    name = "MasterCard Gold",
-                    cutOffDate = 13,
-                    dueDate = 30
-                ),
-                Card(
-                    name = "American Express",
-                    cutOffDate = 18,
-                    dueDate = 11
-                ),
-                Card(
-                    name = "Discover",
-                    cutOffDate = 21,
-                    dueDate = 25
-                )
-            )
+            cards = getFakeCards()
         ),
         onCreditClicked = {}
     )

@@ -1,9 +1,16 @@
 package com.cb.meapps.presentation.ui.common
 
+import android.widget.NumberPicker
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -11,15 +18,20 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Slider
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -31,29 +43,38 @@ fun CommonInputField(
     onValueChange: (String) -> Unit
 ) {
 
-    val onValueChange : (String) -> Unit = { newValue ->
+    val onChanged : (String) -> Unit = { newValue ->
         when (inputType) {
-            InputType.NUMBER -> {
+            InputType.Number -> {
                 if (newValue.all { it.isDigit() }) {
                     onValueChange(newValue)
                 }
             }
-            InputType.TEXT -> {
+            InputType.Decimal -> {
+                val regex = Regex("^[0-9]*\\.?[0-9]*$")
+                if (regex.matches(newValue)) {
+                    onValueChange(newValue)
+                }
+            }
+            InputType.Text -> {
                 onValueChange(newValue)
             }
-            InputType.EMAIL -> {
+            InputType.Email -> {
                 if (newValue.contains("@")) {
                     onValueChange(newValue)
                 }
             }
-            is InputType.NumberPicker -> {}
+            is InputType.NumberPicker -> {
+                onValueChange(newValue)
+            }
         }
     }
 
     val keyboardOptions = when (inputType) {
-        InputType.NUMBER -> KeyboardOptions(keyboardType = KeyboardType.Number)
-        InputType.TEXT -> KeyboardOptions(keyboardType = KeyboardType.Text)
-        InputType.EMAIL -> KeyboardOptions(keyboardType = KeyboardType.Email)
+        InputType.Number -> KeyboardOptions(keyboardType = KeyboardType.Number)
+        InputType.Decimal -> KeyboardOptions(keyboardType = KeyboardType.Decimal)
+        InputType.Text -> KeyboardOptions(keyboardType = KeyboardType.Text)
+        InputType.Email -> KeyboardOptions(keyboardType = KeyboardType.Email)
         is InputType.NumberPicker -> KeyboardOptions.Default
     }
 
@@ -65,41 +86,46 @@ fun CommonInputField(
     var showDialog by remember { mutableStateOf(false) }
 
     Column {
-        OutlinedTextField(
-            value = currentValue,
-            onValueChange = { newValue -> onValueChange(newValue) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp).apply {
-                    clickable {
-                        if (isReadyOnly) {
-                            showDialog = true
-                        }
-                    }
+        Box {
+            OutlinedTextField(
+                value = currentValue,
+                onValueChange = { newValue -> onChanged(newValue) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                label = {
+                    Text(
+                        label,
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.Light,
+                        color = MaterialTheme.colorScheme.primary,
+                    )
                 },
-            label = {
-                Text(
-                    label,
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Light,
-                    color = MaterialTheme.colorScheme.primary,
+                placeholder = {
+                    Text(
+                        placeholder,
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.Light,
+                        color = MaterialTheme.colorScheme.secondary,
+                    )
+                },
+                readOnly = isReadyOnly,
+                keyboardOptions = keyboardOptions,
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = MaterialTheme.colorScheme.secondary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.primary
                 )
-            },
-            placeholder = {
-                Text(
-                    placeholder,
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Light,
-                    color = MaterialTheme.colorScheme.secondary,
-                )
-            },
-            readOnly = isReadyOnly,
-            keyboardOptions = keyboardOptions,
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = MaterialTheme.colorScheme.secondary,
-                unfocusedBorderColor = MaterialTheme.colorScheme.primary
             )
-        )
+            if (isReadyOnly) {
+                Box(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+                    .height(64.dp)
+                    .clickable {
+                        showDialog = true
+                    })
+            }
+        }
 
         if (showDialog) {
             NumberPickerDialog(
@@ -126,21 +152,23 @@ private fun NumberPickerDialog(
     onValueSelected: (Int) -> Unit,
     range: IntRange
 ) {
-    var selectedValue by remember { mutableStateOf(initialValue) }
+    var selectedValue by remember { mutableIntStateOf(initialValue) }
 
     AlertDialog(
         onDismissRequest = { onDismiss() },
         title = { Text("Pick a number") },
         text = {
-            Column {
-                Text("Selected: $selectedValue")
-                Slider(
-                    value = selectedValue.toFloat(),
-                    onValueChange = { newValue ->
-                        selectedValue = newValue.toInt()
-                    },
-                    valueRange = range.first.toFloat()..range.last.toFloat(),
-                    steps = range.last - range.first
+            Column(
+                Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.Center,
+                Alignment.CenterHorizontally
+            ) {
+                NumberPicker(
+                    value = selectedValue,
+                    range = range,
+                    onChanged = { newValue ->
+                        selectedValue = newValue
+                    }
                 )
             }
         },
@@ -162,9 +190,51 @@ private fun NumberPickerDialog(
 }
 
 sealed class InputType {
-    data object TEXT : InputType()
-    data object NUMBER : InputType()
-    data object EMAIL : InputType()
+    data object Text : InputType()
+    data object Number : InputType()
+    data object Decimal : InputType()
+    data object Email : InputType()
 
     data class NumberPicker(val range: IntRange): InputType()
+}
+
+@Preview
+@Composable
+private fun PreviewCommonInputField() {
+    Surface {
+        Column(
+            Modifier.padding(vertical = 16.dp)
+        ) {
+            CommonInputField(
+                label = "Engineer name",
+                placeholder = "Carlos Bedoy",
+                currentValue = "",
+                inputType = InputType.Decimal
+            ) {}
+            CommonInputField(
+                label = "Engineer email",
+                placeholder = "Carlos Bedoy",
+                currentValue = "",
+                inputType = InputType.Email
+            ) {}
+            CommonInputField(
+                label = "Engineer number",
+                placeholder = "Carlos Bedoy",
+                currentValue = "",
+                inputType = InputType.Number
+            ) {}
+            CommonInputField(
+                label = "Engineer bio",
+                placeholder = "Carlos Bedoy",
+                currentValue = "",
+                inputType = InputType.Text
+            ) {}
+            CommonInputField(
+                label = "Engineer age",
+                placeholder = "Carlos Bedoy",
+                currentValue = "",
+                inputType = InputType.NumberPicker(IntRange(0, 30))
+            ) {}
+        }
+    }
 }

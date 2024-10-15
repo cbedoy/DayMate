@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import androidx.room.Room
 import com.cb.meapps.data.PreferencesDelegate
+import com.cb.meapps.data.dao.CardDao
 import com.cb.meapps.data.dao.DocumentDao
 import com.cb.meapps.data.database.DayMateDatabase
 import dagger.Module
@@ -35,11 +36,16 @@ class AppModule {
             app,
             DayMateDatabase::class.java,
             "document_db"
-        ).build()
+        ).fallbackToDestructiveMigration().build()
     }
 
     @Provides
     fun provideDocumentDao(db: DayMateDatabase): DocumentDao {
         return db.documentDao()
+    }
+
+    @Provides
+    fun provideCardDao(db: DayMateDatabase): CardDao {
+        return db.cardDao()
     }
 }

@@ -6,15 +6,15 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.cb.meapps.R
 import com.cb.meapps.presentation.ui.common.CommonInputField
 import com.cb.meapps.presentation.ui.common.CommonTopAppBar
 import com.cb.meapps.presentation.ui.common.Header
@@ -29,33 +29,33 @@ fun AddCardScreen(
 ) {
     Scaffold(
         topBar = {
-            CommonTopAppBar(title = "Add Your Card to the Club!")
+            CommonTopAppBar(title = stringResource(R.string.add_new_card_title))
         }
     ) { paddingValues ->
         Column(
             Modifier.padding(paddingValues),
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            Header(text = "Give it a name, jot down the key dates, and you're all set! Your card will be organized and under control. No more missed payment dates! \uD83D\uDCB3\uD83D\uDCC5")
+            Header(text = stringResource(R.string.add_new_card_header))
             CommonInputField(
-                label = "Card name",
-                placeholder = "Hey banco",
+                label = stringResource(R.string.add_new_card_card_name),
+                placeholder = stringResource(R.string.add_new_card_card_placeholder),
                 currentValue = "",
-                inputType = InputType.TEXT,
+                inputType = InputType.Text,
                 onValueChange = {}
             )
             CommonInputField(
                 label = "Cut of date",
                 placeholder = "Cut of date",
                 currentValue = "",
-                inputType = InputType.NumberPicker(IntRange(0, 30)),
+                inputType = InputType.NumberPicker(IntRange(1, 30)),
                 onValueChange = {}
             )
             CommonInputField(
                 label = "Payment due date",
                 placeholder = "Payment due date",
                 currentValue = "",
-                inputType = InputType.NumberPicker(IntRange(0, 31)),
+                inputType = InputType.NumberPicker(IntRange(1, 31)),
                 onValueChange = {}
             )
             Spacer(modifier = Modifier.height(16.dp))
@@ -68,7 +68,7 @@ fun AddCardScreen(
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
             ) {
-                Text(text = "Save")
+                Text(text = stringResource(R.string.common_save))
             }
         }
     }

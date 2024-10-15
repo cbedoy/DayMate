@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">DayMate</string>
+    <string name="add_new_card_card_name">Card name</string>
+    <string name="add_new_card_card_placeholder">Hey banco</string>
+    <string name="add_new_card_header">Give it a name, jot down the key dates, and you\'re all set! Your card will be organized and under control. No more missed payment dates! 💳📅</string>
+    <string name="add_new_card_title">Add Your Card to the Club!</string>
+    <string name="common_save">Save</string>
+    <string name="card_payment_calendar_title">Your Future in Numbers</string>
+    <string name="common_pay">"Pay "</string>
+    <string name="comon_pay_this_day">" this day!"</string>
+    <string name="card_payment_calendar_no_payments_due">No payments due today.</string>
+    <string name="docs_title">Bureaucracy docs</string>
+    <string name="financial_projection_title">Your Future in Numbers</string>
 </resources>

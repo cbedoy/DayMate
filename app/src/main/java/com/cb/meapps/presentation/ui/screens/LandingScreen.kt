@@ -24,6 +24,8 @@ fun LandingScreen(
     onDocsClicked: () -> Unit,
     onCardPaymentCalendarClicked: () -> Unit,
     onOnboardingClicked: () -> Unit,
+    onMyTripsClicked: () -> Unit,
+    onFuelTrackerClicked: () ->Unit,
     onCreditClicked: () -> Unit
 ) {
     Scaffold(
@@ -44,6 +46,12 @@ fun LandingScreen(
                 }
                 item {
                     LandingItem(onCardPaymentCalendarClicked, "Card Payment Calendar")
+                }
+                item {
+                    LandingItem(onFuelTrackerClicked, "Fuel tracker")
+                }
+                item {
+                    LandingItem(onMyTripsClicked, "My trips")
                 }
                 item {
                     LandingItem(onOnboardingClicked, "Onboarding")
@@ -77,7 +85,9 @@ private fun PreviewLandingScreen() {
             onCreditClicked = {},
             onDocsClicked = {},
             onOnboardingClicked = {},
-            onCardPaymentCalendarClicked = {}
+            onCardPaymentCalendarClicked = {},
+            onFuelTrackerClicked = {},
+            onMyTripsClicked = {}
         )
     }
 }

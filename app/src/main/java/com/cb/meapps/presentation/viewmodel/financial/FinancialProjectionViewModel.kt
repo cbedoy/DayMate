@@ -2,6 +2,7 @@ package com.cb.meapps.presentation.viewmodel.financial
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.cb.meapps.domain.asMoney
 import com.cb.meapps.presentation.ui.screens.ProjectionDay
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -83,8 +84,6 @@ class FinancialProjectionViewModel @Inject constructor() : ViewModel() {
         }
     }
 }
-
-private fun Double.asMoney() = "\$${String.format("%,.0f", this)}"
 
 data class FinancialProjectionState(
     val projectionDays: List<ProjectionDay> = emptyList()
