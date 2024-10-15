@@ -1,6 +1,7 @@
 package com.cb.meapps.presentation.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -27,6 +29,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -136,6 +139,7 @@ private fun FuelTrackerViewContainer(
         Modifier
             .fillMaxSize()
             .padding(horizontal = 16.dp)
+            .border(1.dp, MaterialTheme.colorScheme.primaryContainer, RoundedCornerShape(16.dp))
             .background(
                 MaterialTheme.colorScheme.onPrimary,
                 RoundedCornerShape(16.dp)
@@ -149,30 +153,16 @@ private fun FuelTrackerViewContainer(
                 text = "$totalKm KM",
                 R.drawable.baseline_directions_car_24
             )
-            Box(modifier = Modifier
-                .width(1.dp)
-                .fillMaxHeight()
-                .background(MaterialTheme.colorScheme.primary))
             FuelTrackerText(
                 text = totalPrice.asMoney(),
                 R.drawable.baseline_currency_exchange_24
             )
-        }
-        Box {
-            Modifier
-                .fillMaxWidth()
-                .height(2.dp)
-                .background(MaterialTheme.colorScheme.primary)
         }
         Row {
             FuelTrackerText(
                 text = "$liters Liters",
                 R.drawable.baseline_local_gas_station_24
             )
-            Box(modifier = Modifier
-                .width(1.dp)
-                .fillMaxHeight()
-                .background(MaterialTheme.colorScheme.primary))
             FuelTrackerText(
                 text = "${kmPerLiter.round(2)} km/l",
                 R.drawable.baseline_battery_charging_full_24

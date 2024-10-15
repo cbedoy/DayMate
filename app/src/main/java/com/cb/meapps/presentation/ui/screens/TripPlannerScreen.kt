@@ -1,6 +1,7 @@
 package com.cb.meapps.presentation.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,7 +19,6 @@ import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -81,6 +81,7 @@ fun TripView(trip: Trip) {
                 .fillMaxSize()
                 .fillMaxHeight()
                 .weight(1.0f)
+                .border(1.dp, MaterialTheme.colorScheme.primaryContainer, RoundedCornerShape(16.dp))
                 .background(
                     MaterialTheme.colorScheme.onPrimary,
                     RoundedCornerShape(16.dp)
@@ -106,6 +107,7 @@ fun TripView(trip: Trip) {
             Modifier
                 .fillMaxSize()
                 .weight(3.0f)
+                .border(1.dp, MaterialTheme.colorScheme.primaryContainer, RoundedCornerShape(16.dp))
                 .background(
                     MaterialTheme.colorScheme.onPrimary,
                     RoundedCornerShape(16.dp)
@@ -126,9 +128,6 @@ fun TripView(trip: Trip) {
                 fontWeight = FontWeight.Normal,
                 color = MaterialTheme.colorScheme.primary
             )
-            OutlinedButton(onClick = { /*TODO*/ }) {
-                Text(text = "See more")
-            }
         }
     }
 }

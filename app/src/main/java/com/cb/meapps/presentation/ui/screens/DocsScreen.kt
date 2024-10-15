@@ -75,7 +75,7 @@ private fun DocumentView(document: Document) {
     Column(
         Modifier
             .fillMaxSize()
-            .border(1.dp, MaterialTheme.colorScheme.primaryContainer, RoundedCornerShape(8.dp))
+            .border(1.dp, MaterialTheme.colorScheme.primaryContainer, RoundedCornerShape(16.dp))
             .background(MaterialTheme.colorScheme.onPrimary, RoundedCornerShape(8.dp))
             .padding(12.dp),
         Arrangement.Center,
