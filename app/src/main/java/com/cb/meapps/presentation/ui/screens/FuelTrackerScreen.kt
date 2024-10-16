@@ -5,6 +5,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -70,7 +71,8 @@ fun FuelTrackerScreen(
     ) { paddingValues ->
         LazyColumn(
             Modifier.padding(paddingValues),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            contentPadding = PaddingValues(vertical = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             item {
                 Header(text = "Track your journey, fuel costs, and discover how far your engine can go.")
@@ -88,8 +90,7 @@ fun FuelTrackerScreen(
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    textAlign = TextAlign.Center
+                        .padding(horizontal = 16.dp)
                 )
             }
             items(state.tracks) {
