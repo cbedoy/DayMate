@@ -1,5 +1,10 @@
 package com.cb.meapps.presentation.ui
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -90,7 +95,15 @@ fun DayMateContainer(
         DayMateRoute.Onboarding.route
     }
 
-    NavHost(navController, startDestination = initialRoute, Modifier) {
+    NavHost(
+        navController,
+        startDestination = initialRoute,
+        enterTransition = { provideEnterTransition() },
+        exitTransition = { provideExitTransition() },
+        popEnterTransition = { providePopEnterTransition() },
+        popExitTransition = { providePopExitTransition() },
+        modifier = Modifier
+    ) {
         composable(DayMateRoute.Landing.route) {
             LandingScreen(
                 onFinancialProjectionClick = onFinancialProjectionClick,
@@ -169,4 +182,19 @@ sealed class DayMateRoute(val route: String) {
     data object CardPaymentCalendar : DayMateRoute("card_payment_calendar")
     data object TripPlanner: DayMateRoute("trip_planner")
     data object FuelTracker: DayMateRoute("fuel_tracker")
+}
+
+fun provideEnterTransition(): EnterTransition {
+    return slideInHorizontally(initialOffsetX = { 1000 }, animationSpec = tween(500))
+}
+
+fun provideExitTransition(): ExitTransition {
+    return slideOutHorizontally(targetOffsetX = { -1000 }, animationSpec = tween(500))
+}
+
+fun providePopEnterTransition(): EnterTransition {
+    return slideInHorizontally(initialOffsetX = { -1000 }, animationSpec = tween(500))
+}
+fun providePopExitTransition(): ExitTransition {
+    return slideOutHorizontally(targetOffsetX = { 1000 }, animationSpec = tween(500))
 }

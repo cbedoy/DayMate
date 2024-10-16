@@ -46,7 +46,7 @@ class FinancialProjectionViewModel @Inject constructor() : ViewModel() {
                 val dayOfMonth = newCal.get(Calendar.DAY_OF_MONTH)
                 var paymentToday = 0.0
 
-                val month = newCal.get(Calendar.MONTH) + 1
+                val month = newCal.get(Calendar.MONTH)
 
                 val isLastDayOfFebruary = if (month == Calendar.FEBRUARY) {
                     val lastDayOfFebruary = newCal.getActualMaximum(Calendar.DAY_OF_MONTH)
@@ -55,7 +55,11 @@ class FinancialProjectionViewModel @Inject constructor() : ViewModel() {
                     false
                 }
 
-                val isPaymentDay = (dayOfMonth == 15 || dayOfMonth == 30 || isLastDayOfFebruary)
+                val isPaymentDay = if (dayIndex == 0) {
+                    false
+                } else {
+                    (dayOfMonth == 15 || dayOfMonth == 30 || isLastDayOfFebruary)
+                }
 
                 if (isPaymentDay) {
                     paymentToday = biweeklyPayment

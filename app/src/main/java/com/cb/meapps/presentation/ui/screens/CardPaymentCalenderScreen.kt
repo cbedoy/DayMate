@@ -125,7 +125,7 @@ fun PaymentItem(date: String, cardsDueToday: List<Card>) {
                     }
                     append(stringResource(R.string.comon_pay_this_day))
                 },
-                style = MaterialTheme.typography.bodySmall,
+                style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onPrimary
             )
         } else {

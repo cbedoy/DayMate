@@ -110,7 +110,7 @@ private fun FuelTrackerSummary(summaryFullTracker: SummaryFullTracker) {
         )
         Text(
             "Here's the average of all your road adventures! Keep in mind it's just a reference, so use it to get a general idea of your fuel consumption. Keep exploring and your tank full! ⛽\uD83D\uDE09",
-            style = MaterialTheme.typography.bodySmall,
+            style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.Light,
             color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.padding(16.dp)
