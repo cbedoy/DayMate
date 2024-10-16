@@ -21,8 +21,11 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -33,28 +36,34 @@ import com.cb.meapps.domain.model.Trip
 import com.cb.meapps.domain.model.getFakeTrips
 import com.cb.meapps.presentation.ui.common.CommonTopAppBar
 import com.cb.meapps.presentation.ui.common.Credit
+import com.cb.meapps.presentation.ui.common.DayMateScaffold
+import kotlinx.coroutines.launch
 
 @Composable
 fun TripPlannerScreen(
     state: TripPlannerState = TripPlannerState(getFakeTrips()),
     onCreditClicked: () -> Unit
 ) {
-    Scaffold(
-        topBar = {
-            CommonTopAppBar(title = "Lets trip!")
-        },
-        bottomBar = {
-            Credit(onCreditClicked)
-        },
+
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    DayMateScaffold(
+        title = "Lets trip!",
+        onCreditClicked = onCreditClicked,
         floatingActionButton = {
             FloatingActionButton(
-                onClick = {  },
+                onClick = {
+                    scope.launch {
+                        snackbarHostState.showSnackbar("No implemented")
+                    }
+                },
                 content = {
                     Icon(Icons.Default.Add, contentDescription = "Add")
                 }
             )
         },
-        floatingActionButtonPosition = FabPosition.End
+        snackbarHostState = snackbarHostState
     ) { paddingValues ->
         LazyColumn(
             Modifier.padding(paddingValues),

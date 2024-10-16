@@ -21,9 +21,12 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -36,26 +39,33 @@ import com.cb.meapps.domain.fake.getFakeDocs
 import com.cb.meapps.domain.model.Document
 import com.cb.meapps.domain.model.FileType
 import com.cb.meapps.presentation.ui.common.CommonTopAppBar
+import com.cb.meapps.presentation.ui.common.DayMateScaffold
 import com.cb.meapps.presentation.viewmodel.DocsState
+import kotlinx.coroutines.launch
 
 // Inspired on https://dribbble.com/shots/14933297/attachments/6649396?mode=media
 @Composable
 fun DocsScreen(
     state: DocsState
 ) {
-    Scaffold(
-        topBar = {
-            CommonTopAppBar(title = stringResource(R.string.docs_title))
-        },
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    DayMateScaffold(
+        title = stringResource(R.string.docs_title),
         floatingActionButton = {
             FloatingActionButton(
-                onClick = {  },
+                onClick = {
+                    scope.launch {
+                        snackbarHostState.showSnackbar("No implemented")
+                    }
+                },
                 content = {
                     Icon(Icons.Default.Add, contentDescription = "Add")
                 }
             )
         },
-        floatingActionButtonPosition = FabPosition.End
+        snackbarHostState = snackbarHostState
     ) { paddingValues ->
         LazyVerticalGrid(
             modifier = Modifier.padding(paddingValues = paddingValues),

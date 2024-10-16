@@ -7,20 +7,22 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cb.meapps.R
 import com.cb.meapps.presentation.ui.common.CommonInputField
-import com.cb.meapps.presentation.ui.common.CommonTopAppBar
+import com.cb.meapps.presentation.ui.common.DayMateScaffold
 import com.cb.meapps.presentation.ui.common.Header
 import com.cb.meapps.presentation.ui.common.InputType
 import com.cb.meapps.presentation.viewmodel.settings.SettingsAction
+import kotlinx.coroutines.launch
 
 @Composable
 fun AddCardScreen(
@@ -28,10 +30,13 @@ fun AddCardScreen(
     onCommit: () -> Unit,
     onCancel: () -> Unit
 ) {
-    Scaffold(
-        topBar = {
-            CommonTopAppBar(title = stringResource(R.string.add_new_card_title))
-        }
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    DayMateScaffold(
+        title = stringResource(R.string.add_new_card_title),
+        onCreditClicked = {},
+        snackbarHostState
     ) { paddingValues ->
         Column(
             Modifier.padding(paddingValues),
@@ -62,7 +67,9 @@ fun AddCardScreen(
             Spacer(modifier = Modifier.height(16.dp))
             OutlinedButton(
                 onClick = {
-
+                    scope.launch {
+                        snackbarHostState.showSnackbar("No implemented")
+                    }
                 },
                 enabled = false,
                 modifier = Modifier

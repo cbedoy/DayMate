@@ -10,7 +10,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,8 +31,7 @@ import com.cb.meapps.R
 import com.cb.meapps.domain.fake.getFakeCards
 import com.cb.meapps.domain.model.Card
 import com.cb.meapps.presentation.ui.common.CommonInputField
-import com.cb.meapps.presentation.ui.common.CommonTopAppBar
-import com.cb.meapps.presentation.ui.common.Credit
+import com.cb.meapps.presentation.ui.common.DayMateScaffold
 import com.cb.meapps.presentation.ui.common.Header
 import com.cb.meapps.presentation.ui.common.InputType
 import com.cb.meapps.presentation.viewmodel.settings.SettingsAction
@@ -45,13 +45,13 @@ fun SettingsScreen(
     onAction: (SettingsAction) -> Unit,
     onCreditClicked: () -> Unit
 ) {
-    Scaffold(
-        topBar = {
-            CommonTopAppBar(title = "Tune Your Finances")
-        },
-        bottomBar = {
-            Credit(onCreditClicked)
-        }
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    DayMateScaffold(
+        title = "Tune Your Finances",
+        onCreditClicked = onCreditClicked,
+        snackbarHostState = snackbarHostState
     ) { paddingValues ->
         LazyColumn(
             Modifier.padding(paddingValues),

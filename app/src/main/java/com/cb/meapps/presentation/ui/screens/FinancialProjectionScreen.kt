@@ -12,11 +12,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme.colorScheme
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -24,13 +26,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cb.meapps.R
-import com.cb.meapps.presentation.ui.common.CommonTopAppBar
-import com.cb.meapps.presentation.ui.common.Credit
+import com.cb.meapps.presentation.ui.common.DayMateScaffold
 import com.cb.meapps.presentation.viewmodel.financial.FinancialProjectionState
 import com.cb.meapps.presentation.viewmodel.settings.SettingsState
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
 
 typealias OnCalculateFinancialProjection = (initialSavings: Double, annualInterestRate: Double, biweeklyPayment: Double) -> Unit
 
@@ -49,13 +47,12 @@ fun FinancialProjectionScreen(
         )
     }
 
-    Scaffold(
-        topBar = {
-            CommonTopAppBar(title = stringResource(R.string.financial_projection_title))
-        },
-        bottomBar = {
-            Credit(onCreditClicked)
-        }
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    DayMateScaffold(
+        title = stringResource(R.string.financial_projection_title),
+        snackbarHostState = snackbarHostState
     ) { paddingValues ->
         Column(
             Modifier

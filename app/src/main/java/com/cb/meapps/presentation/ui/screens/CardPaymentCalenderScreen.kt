@@ -8,9 +8,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -22,8 +24,7 @@ import androidx.compose.ui.unit.dp
 import com.cb.meapps.R
 import com.cb.meapps.domain.fake.getFakeCards
 import com.cb.meapps.domain.model.Card
-import com.cb.meapps.presentation.ui.common.CommonTopAppBar
-import com.cb.meapps.presentation.ui.common.Credit
+import com.cb.meapps.presentation.ui.common.DayMateScaffold
 import com.cb.meapps.presentation.viewmodel.settings.SettingsState
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -37,13 +38,13 @@ fun CardPaymentCalendarScreen(
     val generateNextDays = generateNextDays(360)
     val datesGroupedByMonth = generateNextDays.groupBy { it.monthName + " " + it.year }
 
-    Scaffold(
-        topBar = {
-            CommonTopAppBar(title = stringResource(R.string.card_payment_calendar_title))
-        },
-        bottomBar = {
-            Credit(onCreditClicked)
-        }
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    DayMateScaffold(
+        title = stringResource(R.string.card_payment_calendar_title),
+        onCreditClicked = onCreditClicked,
+        snackbarHostState
     ) { paddingValues ->
         Column(
             Modifier
