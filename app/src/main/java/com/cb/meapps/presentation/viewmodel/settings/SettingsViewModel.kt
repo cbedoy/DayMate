@@ -75,7 +75,7 @@ class SettingsViewModel @Inject constructor(
                     _state.update { currentState ->
                         currentState.copy(loading = true)
                     }
-                    addNewCardUseCase(action.name, action.cutOffDate, action.dueDate)
+                    addNewCardUseCase(action.name, action.cutOffDate, action.dueDate, action.debt)
                 }
             }
         }
@@ -95,8 +95,11 @@ sealed class SettingsAction {
     data class ChangeInitialSavings(val newValue: String) : SettingsAction()
     data class ChangeAnnualInterestRate(val newValue: String) : SettingsAction()
     data class ChangeBiweeklyPayment(val newValue: String) : SettingsAction()
-    data class AddNewCard(val name: String,
-                          val cutOffDate: Int,
-                          val dueDate: Int) : SettingsAction()
+    data class AddNewCard(
+        val name: String,
+        val cutOffDate: Int,
+        val dueDate: Int,
+        val debt: Float
+    ) : SettingsAction()
     data object SkipOnboarding : SettingsAction()
 }

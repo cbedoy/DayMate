@@ -8,13 +8,14 @@ import javax.inject.Inject
 class AddNewCardUseCase @Inject constructor(
     private val cardsRepository: CardsRepository
 ) {
-    suspend operator fun invoke(name: String, cutOffDate: Int, dueDate: Int) {
+    suspend operator fun invoke(name: String, cutOffDate: Int, dueDate: Int, debt: Float) {
         delay(3_00)
         cardsRepository.saveCard(
             CardEntity(
                 name = name,
                 cutOffDate = cutOffDate,
-                dueDate = dueDate
+                dueDate = dueDate,
+                debt = debt
             )
         )
     }

@@ -6,6 +6,7 @@ import androidx.room.Room
 import com.cb.meapps.data.PreferencesDelegate
 import com.cb.meapps.data.dao.CardDao
 import com.cb.meapps.data.dao.DocumentDao
+import com.cb.meapps.data.dao.FuelTrackerDao
 import com.cb.meapps.data.database.DayMateDatabase
 import dagger.Module
 import dagger.Provides
@@ -47,5 +48,10 @@ class AppModule {
     @Provides
     fun provideCardDao(db: DayMateDatabase): CardDao {
         return db.cardDao()
+    }
+
+    @Provides
+    fun provideFuelTrackerDao(db: DayMateDatabase): FuelTrackerDao {
+        return db.fuelTrackerDao()
     }
 }

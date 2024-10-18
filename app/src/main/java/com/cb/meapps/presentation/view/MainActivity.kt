@@ -59,6 +59,9 @@ class MainActivity : ComponentActivity() {
                             val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.linkedin.com/in/carlos-cervantes-bedoy-34248187/"))
                             context.startActivity(intent)
                         },
+                        onFuelTrackerAction =  {
+                            fuelTrackerViewModel.dispatch(it)
+                        },
                         onSettingsAction = {
                             settingsViewModel.dispatch(it)
                         }

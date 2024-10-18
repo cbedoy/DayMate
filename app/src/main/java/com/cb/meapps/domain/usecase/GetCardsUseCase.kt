@@ -22,9 +22,11 @@ class GetCardsUseCase @Inject constructor(
                 } else {
                     entityList.map { entity ->
                         Card(
+                            id = entity.id,
                             name = entity.name,
                             cutOffDate = entity.cutOffDate,
-                            dueDate = entity.dueDate
+                            dueDate = entity.dueDate,
+                            debt = entity.debt
                         )
                     }
                 }

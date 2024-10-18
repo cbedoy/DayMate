@@ -6,3 +6,11 @@ fun Int.asMoney() = "\$${String.format("%,.0f", this)}"
 fun Float.asMoney() = "\$${String.format("%,.0f", this)}"
 
 fun Float.round(decimals: Int) =  String.format("%.${decimals}f", this)
+
+fun String.toDoubleOrZero(): Double {
+    return this.toDoubleOrNull() ?: 0.0
+}
+
+fun String.toFloatOrZero(): Float {
+    return this.toFloatOrNull() ?: 0.0f
+}

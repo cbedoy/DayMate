@@ -2,6 +2,7 @@ package com.cb.meapps.presentation.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -45,6 +46,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun FuelTrackerScreen(
     state: FuelTrackerState,
+    onNavigateToEdit: (FuelTracker) -> Unit,
     onCreditClicked: () -> Unit
 ) {
     val scope = rememberCoroutineScope()
@@ -91,8 +93,10 @@ fun FuelTrackerScreen(
                         .padding(horizontal = 16.dp)
                 )
             }
-            items(state.tracks) {
-                FuelTrackerView(it)
+            items(state.tracks) { item ->
+                FuelTrackerView(item) {
+                    onNavigateToEdit(item)
+                }
             }
         }
     }
@@ -106,7 +110,7 @@ private fun FuelTrackerSummary(summaryFullTracker: SummaryFullTracker) {
             totalPrice = summaryFullTracker.totalPrice,
             liters = summaryFullTracker.totalLiters,
             kmPerLiter = summaryFullTracker.totalKmPerLiter
-        )
+        ) {}
         Text(
             "Here's the average of all your road adventures! Keep in mind it's just a reference, so use it to get a general idea of your fuel consumption. Keep exploring and your tank full! ⛽\uD83D\uDE09",
             style = MaterialTheme.typography.bodyMedium,
@@ -118,12 +122,13 @@ private fun FuelTrackerSummary(summaryFullTracker: SummaryFullTracker) {
 }
 
 @Composable
-private fun FuelTrackerView(fuelTracker: FuelTracker) {
+private fun FuelTrackerView(fuelTracker: FuelTracker, onClick: () -> Unit) {
     FuelTrackerViewContainer(
         totalKm = fuelTracker.totalKM,
         totalPrice = fuelTracker.totalPrice,
         liters = fuelTracker.liters,
-        kmPerLiter = fuelTracker.kmPerLiter
+        kmPerLiter = fuelTracker.kmPerLiter,
+        onClick = onClick
     )
 }
 
@@ -132,7 +137,8 @@ private fun FuelTrackerViewContainer(
     totalKm: Float,
     totalPrice: Float,
     liters: Float,
-    kmPerLiter: Float
+    kmPerLiter: Float,
+    onClick: () -> Unit
 ) {
     Column(
         Modifier
@@ -143,6 +149,7 @@ private fun FuelTrackerViewContainer(
                 MaterialTheme.colorScheme.onPrimary,
                 RoundedCornerShape(16.dp)
             )
+            .clickable(onClick = onClick)
             .padding(horizontal = 16.dp, vertical = 8.dp),
         Arrangement.Center,
         Alignment.Start
@@ -213,6 +220,7 @@ private fun PreviewFuelTrackerScreen() {
                 tracks = fakeTracks,
                 summaryFullTracker = summaryFullTracker
             ),
+            onNavigateToEdit = {},
             onCreditClicked = {}
         )
     }

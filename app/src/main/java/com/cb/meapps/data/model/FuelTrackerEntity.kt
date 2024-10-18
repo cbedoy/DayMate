@@ -3,11 +3,10 @@ package com.cb.meapps.data.model
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "cards")
-data class CardEntity(
+@Entity(tableName = "fuel_tracker")
+data class FuelTrackerEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    val name: String,
-    val cutOffDate: Int,
-    val dueDate: Int,
-    val debt: Float
+    val totalKM: Float,
+    val totalPrice: Float,
+    val liters: Float
 )

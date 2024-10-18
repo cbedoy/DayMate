@@ -26,6 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cb.meapps.R
+import com.cb.meapps.domain.toDoubleOrZero
 import com.cb.meapps.presentation.ui.common.DayMateScaffold
 import com.cb.meapps.presentation.viewmodel.financial.FinancialProjectionState
 import com.cb.meapps.presentation.viewmodel.settings.SettingsState
@@ -197,8 +198,4 @@ fun PreviewFinancialProjection() {
             onCreditClicked = {}
         )
     }
-}
-
-private fun String.toDoubleOrZero(): Double {
-    return this.toDoubleOrNull() ?: 0.0
 }

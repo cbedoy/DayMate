@@ -7,35 +7,19 @@ import com.cb.meapps.domain.model.FuelTracker
 
 fun getFakeCards(): List<Card> {
     return listOf(
-        Card(
-            name = "Invex",
-            cutOffDate = 20,
-            dueDate = 10
-        ),
-        Card(
-            name = "Hey Banco",
-            cutOffDate = 25,
-            dueDate = 15
-        ),
-        Card(
-            name = "Rappi",
-            cutOffDate = 15,
-            dueDate = 5
-        ),
-        Card(
-            name = "Citibanamex",
-            cutOffDate = 14,
-            dueDate = 4
-        )
+        Card(id = 1, name = "Invex", cutOffDate = 20, dueDate = 10, debt = 21000f),
+        Card(id = 2, name = "Hey Banco", cutOffDate = 25, dueDate = 15, debt = 8000f),
+        Card(id = 3, name = "Rappi", cutOffDate = 15, dueDate = 5, debt = 6000f),
+        Card(id = 4, name = "Citibanamex", cutOffDate = 14, dueDate = 4, debt = 3600f)
     )
 }
 
 fun getFakeTracks(): List<FuelTracker> {
     return listOf(
-        FuelTracker(560f, 988f, 40f),
-        FuelTracker(550f, 1000f, 42.5f),
-        FuelTracker(120f, 200f, 8.1f),
-        FuelTracker(265f, 1000f, 42.3f),
+        FuelTracker(id = 1, totalKM = 560f, totalPrice = 988f, liters = 40f),
+        FuelTracker(id = 2, totalKM = 550f, totalPrice = 1000f, liters = 42.5f),
+        FuelTracker(id = 3, totalKM = 120f, totalPrice = 200f, liters = 8.1f),
+        FuelTracker(id = 4, totalKM = 347f, totalPrice = 1000f, liters = 42.3f),
     )
 }
 

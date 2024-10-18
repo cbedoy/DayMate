@@ -1,6 +1,7 @@
 package com.cb.meapps.domain.model
 
 data class FuelTracker(
+    val id: Int,
     val totalKM: Float,
     val totalPrice: Float,
     val liters: Float
