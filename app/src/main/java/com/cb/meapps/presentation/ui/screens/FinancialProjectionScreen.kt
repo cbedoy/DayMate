@@ -28,27 +28,26 @@ import androidx.compose.ui.unit.sp
 import com.cb.meapps.R
 import com.cb.meapps.domain.toDoubleOrZero
 import com.cb.meapps.presentation.ui.common.DayMateScaffold
-import com.cb.meapps.presentation.viewmodel.financial.FinancialProjectionState
+import com.cb.meapps.presentation.viewmodel.financial.ProjectionsAction
+import com.cb.meapps.presentation.viewmodel.financial.ProjectionsState
 import com.cb.meapps.presentation.viewmodel.settings.SettingsState
-
-typealias OnCalculateFinancialProjection = (initialSavings: Double, annualInterestRate: Double, biweeklyPayment: Double) -> Unit
 
 @Composable
 fun FinancialProjectionScreen(
     settingsState: SettingsState,
-    financialProjectionState: FinancialProjectionState,
-    onCalculateFinancialProjection: OnCalculateFinancialProjection,
-    onCreditClicked: () -> Unit
+    projectionsState: ProjectionsState,
+    onProjectionsAction : (ProjectionsAction) -> Unit
 ) {
     LaunchedEffect(Unit){
-        onCalculateFinancialProjection(
-            settingsState.initialSavings.toDoubleOrZero(),
-            settingsState.annualInterestRate.toDoubleOrZero(),
-            settingsState.biweeklyPayment.toDoubleOrZero()
+        onProjectionsAction(
+            ProjectionsAction.CalculateFinancialProjection(
+                settingsState.initialSavings.toDoubleOrZero(),
+                settingsState.annualInterestRate.toDoubleOrZero(),
+                settingsState.biweeklyPayment.toDoubleOrZero()
+            )
         )
     }
 
-    val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 
     DayMateScaffold(
@@ -65,7 +64,7 @@ fun FinancialProjectionScreen(
             ) {
                 // Use LazyColumn to display the list
                 LazyColumn {
-                    items(financialProjectionState.projectionDays) { projectionDay ->
+                    items(projectionsState.projectionDays) { projectionDay ->
                         ProjectionRow(projectionDay = projectionDay)
                     }
                 }
@@ -193,9 +192,8 @@ fun PreviewFinancialProjection() {
     Surface {
         FinancialProjectionScreen(
             settingsState = SettingsState(),
-            financialProjectionState = FinancialProjectionState(),
-            onCalculateFinancialProjection = {_, _, _ -> },
-            onCreditClicked = {}
+            projectionsState = ProjectionsState(),
+            onProjectionsAction = {}
         )
     }
 }

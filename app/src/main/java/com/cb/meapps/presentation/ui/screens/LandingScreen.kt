@@ -28,25 +28,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.cb.meapps.presentation.ui.DayMateRoute
 import com.cb.meapps.presentation.ui.common.DayMateScaffold
 
 @Composable
 fun LandingScreen(
-    onFinancialProjectionClick: () -> Unit,
-    onSettingsClicked: () -> Unit,
-    onDocsClicked: () -> Unit,
-    onCardPaymentCalendarClicked: () -> Unit,
-    onOnboardingClicked: () -> Unit,
-    onMyTripsClicked: () -> Unit,
-    onFuelTrackerClicked: () ->Unit,
-    onCreditClicked: () -> Unit
+    onNavigationClicked: (DayMateRoute) -> Unit
 ) {
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
-    
+
     DayMateScaffold(
         title = "Day Mate",
-        onCreditClicked = onCreditClicked,
         snackbarHostState = snackbarHostState
     ) { paddingValues ->
         Box(
@@ -64,52 +57,51 @@ fun LandingScreen(
             ) {
                 item {
                     LandingItem(
-                        onDocsClicked,
-                        "Documents",
-                        "\uD83D\uDCC4"
-                    )
-                }
-                item {
-                    LandingItem(
-                        onFinancialProjectionClick,
-                        "Financial Projection",
+                        "Savings Journey",
                         "\uD83D\uDCCA"
-                    )
+                    ) { onNavigationClicked(DayMateRoute.FinancialProjection) }
                 }
                 item {
                     LandingItem(
-                        onCardPaymentCalendarClicked,
-                        "Card Payment Calendar",
+                        "Pay Day Radar",
                         "\uD83D\uDCB3"
-                    )
+                    ) { onNavigationClicked(DayMateRoute.CardPaymentCalendar) }
                 }
                 item {
                     LandingItem(
-                        onFuelTrackerClicked,
+                        "Money Map",
+                        "\uD83E\uDDE0"
+                    ) { onNavigationClicked(DayMateRoute.MoneyPlanner) }
+                }
+                item {
+                    LandingItem(
                         "Fuel tracker",
                         "⛽"
-                    )
+                    ) { onNavigationClicked(DayMateRoute.FuelTracker) }
                 }
                 item {
                     LandingItem(
-                        onMyTripsClicked,
                         "My trips",
                         "\uD83D\uDE80"
-                    )
+                    ) { onNavigationClicked(DayMateRoute.TripPlanner) }
                 }
                 item {
                     LandingItem(
-                        onOnboardingClicked,
+                        "Documents",
+                        "\uD83D\uDCC4"
+                    ) { onNavigationClicked(DayMateRoute.Docs) }
+                }
+                item {
+                    LandingItem(
                         "Onboarding",
                         "\uD83D\uDCD9"
-                    )
+                    ) { onNavigationClicked(DayMateRoute.Onboarding) }
                 }
                 item {
                     LandingItem(
-                        onSettingsClicked,
                         "Settings",
                         "⚙\uFE0F"
-                    )
+                    ) { onNavigationClicked(DayMateRoute.Settings) }
                 }
             }
         }
@@ -117,7 +109,7 @@ fun LandingScreen(
 }
 
 @Composable
-private fun LandingItem(onClick: () -> Unit, text: String, icon: String) {
+private fun LandingItem(text: String, icon: String, onClick: () -> Unit) {
     Column(
         Modifier
             .fillMaxSize()
@@ -127,14 +119,14 @@ private fun LandingItem(onClick: () -> Unit, text: String, icon: String) {
                 RoundedCornerShape(16.dp)
             )
             .clickable(onClick = onClick)
-            .padding(16.dp),
+            .padding(vertical = 32.dp),
         Arrangement.Center,
         Alignment.CenterHorizontally
     ) {
         Text(
             icon,
             style = MaterialTheme.typography.headlineLarge,
-            fontWeight = FontWeight.Bold,
+            fontWeight = FontWeight.SemiBold,
             color = MaterialTheme.colorScheme.primary,
             textAlign = TextAlign.Center
         )
@@ -142,10 +134,10 @@ private fun LandingItem(onClick: () -> Unit, text: String, icon: String) {
         Text(
             text.uppercase(),
             style = MaterialTheme.typography.bodyMedium,
-            fontWeight = FontWeight.Normal,
+            fontWeight = FontWeight.SemiBold,
             color = MaterialTheme.colorScheme.primary,
             textAlign = TextAlign.Center,
-            minLines = 2
+            maxLines = 1
         )
     }
 }
@@ -155,14 +147,7 @@ private fun LandingItem(onClick: () -> Unit, text: String, icon: String) {
 private fun PreviewLandingScreen() {
     Surface {
         LandingScreen(
-            onFinancialProjectionClick = {},
-            onSettingsClicked = {},
-            onCreditClicked = {},
-            onDocsClicked = {},
-            onOnboardingClicked = {},
-            onCardPaymentCalendarClicked = {},
-            onFuelTrackerClicked = {},
-            onMyTripsClicked = {}
+            onNavigationClicked = {}
         )
     }
 }

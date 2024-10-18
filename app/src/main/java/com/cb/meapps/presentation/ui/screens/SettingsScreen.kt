@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import com.cb.meapps.R
 import com.cb.meapps.domain.fake.getFakeCards
 import com.cb.meapps.domain.model.Card
+import com.cb.meapps.presentation.ui.DayMateRoute
 import com.cb.meapps.presentation.ui.common.CommonInputField
 import com.cb.meapps.presentation.ui.common.DayMateScaffold
 import com.cb.meapps.presentation.ui.common.Header
@@ -40,17 +41,14 @@ import com.cb.meapps.presentation.viewmodel.settings.SettingsState
 @Composable
 fun SettingsScreen(
     settingsState: SettingsState,
-    onFinancialProjectionClicked: () -> Unit,
-    onAddNewCardClicked: () -> Unit,
-    onAction: (SettingsAction) -> Unit,
-    onCreditClicked: () -> Unit
+    onNavigationClicked: (DayMateRoute) -> Unit,
+    onAction: (SettingsAction) -> Unit
 ) {
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 
     DayMateScaffold(
         title = "Tune Your Finances",
-        onCreditClicked = onCreditClicked,
         snackbarHostState = snackbarHostState
     ) { paddingValues ->
         LazyColumn(
@@ -97,15 +95,16 @@ fun SettingsScreen(
                 )
             }
             item {
-                OutlinedButton(onFinancialProjectionClicked,
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)) {
+                OutlinedButton({
+                    onNavigationClicked(DayMateRoute.FinancialProjection)
+                }, Modifier.fillMaxWidth().padding(16.dp)) {
                     Text(text = "Open Financial projection")
                 }
             }
             item {
-                SettingsCardHeadline(settingsState.cards, onAddNewCardClicked)
+                SettingsCardHeadline(settingsState.cards) {
+                    onNavigationClicked(DayMateRoute.AddNewCard)
+                }
             }
 
             item {
@@ -276,9 +275,7 @@ private fun PreviewNoCardView() {
 private fun PreviewSettingsScreen() {
     SettingsScreen(
         settingsState = SettingsState(),
-        onFinancialProjectionClicked = {},
         onAction = {},
-        onCreditClicked = {},
-        onAddNewCardClicked = {}
+        onNavigationClicked = {}
     )
 }

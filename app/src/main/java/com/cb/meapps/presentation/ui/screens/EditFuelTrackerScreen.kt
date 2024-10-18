@@ -39,8 +39,7 @@ fun EditFuelTrackerScreen(
     }
 
     DayMateScaffold(
-        title = "Adventure Miles!",
-        onCreditClicked = {},
+        title = "Adventure Miles!"
     ) { paddingValues ->
         Column(
             Modifier.padding(paddingValues),

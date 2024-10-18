@@ -23,11 +23,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.cb.meapps.presentation.ui.DayMateRoute
 import kotlinx.coroutines.launch
 
 @Composable
 fun OnboardingScreen(
-    onCompleted: () -> Unit
+    onNavigationClicked: (DayMateRoute) -> Unit
 ) {
     val pages = buildPages()
 
@@ -47,7 +48,9 @@ fun OnboardingScreen(
             OnboardingPage(pages[page])
         }
         // Navigation controls
-        OnboardingNavControl(pages, pagerState, onCompleted)
+        OnboardingNavControl(pages, pagerState) {
+            onNavigationClicked(DayMateRoute.Landing)
+        }
     }
 }
 

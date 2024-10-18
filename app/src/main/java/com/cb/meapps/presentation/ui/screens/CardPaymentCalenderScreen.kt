@@ -32,8 +32,7 @@ import java.util.Locale
 
 @Composable
 fun CardPaymentCalendarScreen(
-    settingsState: SettingsState,
-    onCreditClicked: () -> Unit
+    settingsState: SettingsState
 ) {
     val generateNextDays = generateNextDays(360)
     val datesGroupedByMonth = generateNextDays.groupBy { it.monthName + " " + it.year }
@@ -43,7 +42,6 @@ fun CardPaymentCalendarScreen(
 
     DayMateScaffold(
         title = stringResource(R.string.card_payment_calendar_title),
-        onCreditClicked = onCreditClicked,
         snackbarHostState
     ) { paddingValues ->
         Column(
@@ -178,6 +176,5 @@ private fun PreviewCardPaymentCalenderScreen() {
         settingsState = SettingsState(
             cards = getFakeCards()
         ),
-        onCreditClicked = {}
     )
 }

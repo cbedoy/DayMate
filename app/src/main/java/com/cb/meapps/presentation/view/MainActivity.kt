@@ -1,7 +1,5 @@
 package com.cb.meapps.presentation.view
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -12,12 +10,11 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import com.cb.meapps.presentation.ui.DayMateContainer
 import com.cb.meapps.presentation.ui.theme.MeAppsTheme
 import com.cb.meapps.presentation.viewmodel.BureaucraticDocsViewModel
 import com.cb.meapps.presentation.viewmodel.FuelTrackerViewModel
-import com.cb.meapps.presentation.viewmodel.financial.FinancialProjectionViewModel
+import com.cb.meapps.presentation.viewmodel.financial.ProjectionsViewModel
 import com.cb.meapps.presentation.viewmodel.settings.SettingsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -26,7 +23,7 @@ class MainActivity : ComponentActivity() {
 
     private val settingsViewModel: SettingsViewModel by viewModels()
     private val bureaucraticDocsViewModel: BureaucraticDocsViewModel by viewModels()
-    private val financialProjectionViewModel: FinancialProjectionViewModel by viewModels()
+    private val projectionsViewModel: ProjectionsViewModel by viewModels()
     private val fuelTrackerViewModel: FuelTrackerViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,32 +36,17 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val settingsState by settingsViewModel.state.collectAsState()
                     val documentsState by bureaucraticDocsViewModel.state.collectAsState()
-                    val financialProjectionState by financialProjectionViewModel.state.collectAsState()
+                    val financialProjectionState by projectionsViewModel.state.collectAsState()
                     val fuelTrackerState by fuelTrackerViewModel.state.collectAsState()
-                    val context = LocalContext.current
 
                     DayMateContainer(
                         settingsState,
                         documentsState,
                         financialProjectionState,
                         fuelTrackerState,
-                        onCalculateFinancialProjection = { initialSavings, annualInterestRate, biweeklyRate ->
-                            financialProjectionViewModel.calculateProjections(
-                                initialSavings,
-                                annualInterestRate,
-                                biweeklyRate
-                            )
-                        },
-                        onCreditClicked = {
-                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.linkedin.com/in/carlos-cervantes-bedoy-34248187/"))
-                            context.startActivity(intent)
-                        },
-                        onFuelTrackerAction =  {
-                            fuelTrackerViewModel.dispatch(it)
-                        },
-                        onSettingsAction = {
-                            settingsViewModel.dispatch(it)
-                        }
+                        onProjectionsAction = projectionsViewModel::dispatch,
+                        onFuelTrackerAction = fuelTrackerViewModel::dispatch,
+                        onSettingsAction = settingsViewModel::dispatch
                     )
                 }
             }

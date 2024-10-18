@@ -46,15 +46,13 @@ import kotlinx.coroutines.launch
 @Composable
 fun FuelTrackerScreen(
     state: FuelTrackerState,
-    onNavigateToEdit: (FuelTracker) -> Unit,
-    onCreditClicked: () -> Unit
+    onNavigateToEdit: (FuelTracker) -> Unit
 ) {
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 
     DayMateScaffold(
         title = "Adventure Miles!",
-        onCreditClicked = onCreditClicked,
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
@@ -220,8 +218,7 @@ private fun PreviewFuelTrackerScreen() {
                 tracks = fakeTracks,
                 summaryFullTracker = summaryFullTracker
             ),
-            onNavigateToEdit = {},
-            onCreditClicked = {}
+            onNavigateToEdit = {}
         )
     }
 }

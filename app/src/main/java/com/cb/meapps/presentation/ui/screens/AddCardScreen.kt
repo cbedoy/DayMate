@@ -35,7 +35,6 @@ fun AddCardScreen(
 
     DayMateScaffold(
         title = stringResource(R.string.add_new_card_title),
-        onCreditClicked = {},
         snackbarHostState
     ) { paddingValues ->
         Column(

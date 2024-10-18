@@ -10,7 +10,6 @@ import androidx.compose.runtime.remember
 @Composable
 fun DayMateScaffold(
     title: String,
-    onCreditClicked: () -> Unit = {},
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
     floatingActionButton: @Composable () -> Unit = {},
     content: @Composable (PaddingValues) -> Unit
@@ -20,7 +19,7 @@ fun DayMateScaffold(
             CommonTopAppBar(title = title)
         },
         bottomBar = {
-            Credit(onCreditClicked)
+            CreditView()
         },
         floatingActionButton = floatingActionButton,
         snackbarHost = {

@@ -16,11 +16,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,15 +32,12 @@ import androidx.compose.ui.unit.dp
 import com.cb.meapps.domain.asMoney
 import com.cb.meapps.domain.model.Trip
 import com.cb.meapps.domain.model.getFakeTrips
-import com.cb.meapps.presentation.ui.common.CommonTopAppBar
-import com.cb.meapps.presentation.ui.common.Credit
 import com.cb.meapps.presentation.ui.common.DayMateScaffold
 import kotlinx.coroutines.launch
 
 @Composable
 fun TripPlannerScreen(
-    state: TripPlannerState = TripPlannerState(getFakeTrips()),
-    onCreditClicked: () -> Unit
+    state: TripPlannerState = TripPlannerState(getFakeTrips())
 ) {
 
     val scope = rememberCoroutineScope()
@@ -50,7 +45,6 @@ fun TripPlannerScreen(
 
     DayMateScaffold(
         title = "Lets trip!",
-        onCreditClicked = onCreditClicked,
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
@@ -146,7 +140,7 @@ fun TripView(trip: Trip) {
 @Preview
 @Composable
 private fun PreviewTripPlannerScreen() {
-    TripPlannerScreen {}
+    TripPlannerScreen()
 }
 
 data class TripPlannerState(

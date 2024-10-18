@@ -19,14 +19,14 @@ import com.cb.meapps.presentation.ui.screens.EditFuelTrackerScreen
 import com.cb.meapps.presentation.ui.screens.FinancialProjectionScreen
 import com.cb.meapps.presentation.ui.screens.FuelTrackerScreen
 import com.cb.meapps.presentation.ui.screens.LandingScreen
-import com.cb.meapps.presentation.ui.screens.OnCalculateFinancialProjection
 import com.cb.meapps.presentation.ui.screens.OnboardingScreen
 import com.cb.meapps.presentation.ui.screens.SettingsScreen
 import com.cb.meapps.presentation.ui.screens.TripPlannerScreen
 import com.cb.meapps.presentation.viewmodel.DocsState
 import com.cb.meapps.presentation.viewmodel.FuelTrackerAction
 import com.cb.meapps.presentation.viewmodel.FuelTrackerState
-import com.cb.meapps.presentation.viewmodel.financial.FinancialProjectionState
+import com.cb.meapps.presentation.viewmodel.financial.ProjectionsAction
+import com.cb.meapps.presentation.viewmodel.financial.ProjectionsState
 import com.cb.meapps.presentation.viewmodel.settings.SettingsAction
 import com.cb.meapps.presentation.viewmodel.settings.SettingsState
 
@@ -34,62 +34,25 @@ import com.cb.meapps.presentation.viewmodel.settings.SettingsState
 fun DayMateContainer(
     settingsState: SettingsState,
     docsState: DocsState,
-    financialProjectionState: FinancialProjectionState,
+    projectionsState: ProjectionsState,
     fuelTrackerState: FuelTrackerState,
-    onCalculateFinancialProjection: OnCalculateFinancialProjection,
-    onCreditClicked : () -> Unit,
+    onProjectionsAction: (ProjectionsAction) -> Unit,
     onFuelTrackerAction: (FuelTrackerAction) -> Unit,
     onSettingsAction: (SettingsAction) -> Unit
 ) {
-
     val navController = rememberNavController()
 
-    val onFinancialProjectionClick = remember(navController) {
-        {
-            navController.navigate(DayMateRoute.FinancialProjection.route) {
+    val onNavigationClicked: (DayMateRoute) -> Unit = { route ->
+        when(route) {
+            is DayMateRoute.Onboarding -> {
+                // sideEffects?
+                onSettingsAction(SettingsAction.SkipOnboarding)
+            }
+            else -> {
 
             }
         }
-    }
-    val onSettingsClicked = remember(navController) {
-        {
-            navController.navigate(DayMateRoute.Settings.route)
-        }
-    }
-    val onDocsClicked = remember(navController) {
-        {
-            navController.navigate(DayMateRoute.Docs.route)
-        }
-    }
-    val onOnboardingCompletedClicked = remember(navController) {
-        {
-            onSettingsAction(SettingsAction.SkipOnboarding)
-
-            navController.navigate(DayMateRoute.Landing.route)
-        }
-    }
-
-    val onAddNewCardClicked = remember(navController) {
-        {
-            navController.navigate(DayMateRoute.AddNewCard.route)
-        }
-    }
-    val onCardPaymentCalendarClicked = remember(navController) {
-        {
-            navController.navigate(DayMateRoute.CardPaymentCalendar.route)
-        }
-    }
-
-    val onMyTripsClicked = remember(navController) {
-        {
-            navController.navigate(DayMateRoute.TripPlanner.route)
-        }
-    }
-
-    val onFuelTrackerClicked = remember(navController) {
-        {
-            navController.navigate(DayMateRoute.FuelTracker.route)
-        }
+        navController.navigate(route.route)
     }
 
     // Navigate to the onboarding screen if the user hasn't skipped it
@@ -110,19 +73,12 @@ fun DayMateContainer(
     ) {
         composable(DayMateRoute.Landing.route) {
             LandingScreen(
-                onFinancialProjectionClick = onFinancialProjectionClick,
-                onSettingsClicked = onSettingsClicked,
-                onCreditClicked = onCreditClicked,
-                onDocsClicked = onDocsClicked,
-                onOnboardingClicked = onOnboardingCompletedClicked,
-                onCardPaymentCalendarClicked = onCardPaymentCalendarClicked,
-                onFuelTrackerClicked = onFuelTrackerClicked,
-                onMyTripsClicked = onMyTripsClicked
+                onNavigationClicked = onNavigationClicked
             )
         }
         composable(DayMateRoute.Onboarding.route) {
             OnboardingScreen(
-                onCompleted = onOnboardingCompletedClicked
+                onNavigationClicked = onNavigationClicked
             )
         }
         composable(DayMateRoute.Docs.route) {
@@ -132,16 +88,14 @@ fun DayMateContainer(
         }
         composable(DayMateRoute.CardPaymentCalendar.route) {
             CardPaymentCalendarScreen(
-                settingsState,
-                onCreditClicked
+                settingsState
             )
         }
         composable(DayMateRoute.FinancialProjection.route) {
             FinancialProjectionScreen(
                 settingsState,
-                financialProjectionState = financialProjectionState,
-                onCalculateFinancialProjection = onCalculateFinancialProjection,
-                onCreditClicked = onCreditClicked
+                projectionsState = projectionsState,
+                onProjectionsAction = onProjectionsAction,
             )
         }
         composable(DayMateRoute.AddNewCard.route) {
@@ -157,20 +111,15 @@ fun DayMateContainer(
             SettingsScreen(
                 settingsState,
                 onAction = onSettingsAction,
-                onCreditClicked = onCreditClicked,
-                onAddNewCardClicked = onAddNewCardClicked,
-                onFinancialProjectionClicked = onFinancialProjectionClick
+                onNavigationClicked = onNavigationClicked
             )
         }
         composable(DayMateRoute.TripPlanner.route) {
-            TripPlannerScreen(
-                onCreditClicked = onCreditClicked
-            )
+            TripPlannerScreen()
         }
         composable(DayMateRoute.FuelTracker.route) {
             FuelTrackerScreen(
                 fuelTrackerState,
-                onCreditClicked = onCreditClicked,
                 onNavigateToEdit = {
                     navController.navigate(
                         DayMateRoute.EditFuelTracker.route.replace(FuelTrackerIdKey, it.id.toString())
@@ -208,6 +157,7 @@ sealed class DayMateRoute(val route: String) {
     data object TripPlanner: DayMateRoute("trip_planner")
     data object FuelTracker: DayMateRoute("fuel_tracker")
     data object EditFuelTracker: DayMateRoute("edit_fuel_tracker/{fuelTrackerId}")
+    data object MoneyPlanner: DayMateRoute("money_planer")
 }
 
 private const val FuelTrackerIdKey = "{fuelTrackerId}"
