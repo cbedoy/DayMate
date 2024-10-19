@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
@@ -80,7 +79,7 @@ fun FinancialProjectionScreen(
 @Composable
 private fun FinancialProjectionHeader(monthYear: String) {
     StickyHeaderView(
-        listOf(monthYear, "Current", "Payment", "Daily", "Daily", "Accumulated", "Total")
+        listOf(monthYear, "Current", "Payment", "Daily", "Accumulated", "Total")
     )
 }
 
@@ -135,10 +134,13 @@ private fun ProjectionRowDivider(projectionDay: ProjectionDay) {
 private fun PreviewProjectionRow() {
     Surface {
         Column {
+            StickyHeaderView(
+                listOf("Sep", "Current", "Payment", "Daily", "Daily", "Accumulated", "Total")
+            )
             ProjectionRow(
                 ProjectionDay(
                     year = 2024,
-                    date = "1 Sept 2024",
+                    date = "1 Sept",
                     current = "100.00",
                     paymentToday = "100.00",
                     dailyInterest = "200.00",
@@ -150,7 +152,7 @@ private fun PreviewProjectionRow() {
             ProjectionRow(
                 ProjectionDay(
                     year = 2024,
-                    date = "1 Sept 2024",
+                    date = "1 Sept",
                     current = "100.00",
                     paymentToday = "100.00",
                     dailyInterest = "200.00",
