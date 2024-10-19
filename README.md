@@ -22,8 +22,12 @@ Personal Assistant App is an Android application designed to simplify and organi
 - **Navigation Component**: Safe and modular navigation management between different screens of the app.
 - **Data Binding**: Used to bind UI components with the ViewModel and data sources, ensuring the UI reacts to data changes.
 
-### Architecture
-The project follows the **MVVM (Model-View-ViewModel)** pattern, allowing a clear separation between business logic and UI, making the project maintainable and scalable.
+### Screens
 
-#### Project Structure:
+|Landing|Financial Projection|Card Payment Calendar|Settings|
+|---|---|---|---|
+|![image](https://github.com/user-attachments/assets/b035a4c8-aa53-4b4c-a346-026341e1c898)|![image](https://github.com/user-attachments/assets/44ec72d8-f5e4-4ebc-8904-1db417b9ea74)|![image](https://github.com/user-attachments/assets/4866480b-ac9b-406b-acfd-316de971e891)|![image](https://github.com/user-attachments/assets/f4e9d47f-d98a-4782-a13f-ea876dfaecb0)|
+
+
+
 
