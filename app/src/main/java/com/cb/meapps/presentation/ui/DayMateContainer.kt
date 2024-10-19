@@ -7,7 +7,6 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -19,6 +18,7 @@ import com.cb.meapps.presentation.ui.screens.EditFuelTrackerScreen
 import com.cb.meapps.presentation.ui.screens.FinancialProjectionScreen
 import com.cb.meapps.presentation.ui.screens.FuelTrackerScreen
 import com.cb.meapps.presentation.ui.screens.LandingScreen
+import com.cb.meapps.presentation.ui.screens.MoneyMapScreen
 import com.cb.meapps.presentation.ui.screens.OnboardingScreen
 import com.cb.meapps.presentation.ui.screens.SettingsScreen
 import com.cb.meapps.presentation.ui.screens.TripPlannerScreen
@@ -87,8 +87,15 @@ fun DayMateContainer(
             )
         }
         composable(DayMateRoute.CardPaymentCalendar.route) {
+
+            LaunchedEffect(settingsState) {
+                onProjectionsAction(ProjectionsAction.CalculateCardPaymentCalendar)
+            }
+
             CardPaymentCalendarScreen(
-                settingsState
+                settingsState = settingsState,
+                projectionsState = projectionsState,
+                onProjectionsAction = onProjectionsAction
             )
         }
         composable(DayMateRoute.FinancialProjection.route) {
@@ -127,6 +134,14 @@ fun DayMateContainer(
                 }
             )
         }
+        composable(DayMateRoute.MoneyMap.route) {
+            LaunchedEffect(settingsState) {
+                onProjectionsAction(ProjectionsAction.LoadMoneyMap)
+            }
+            MoneyMapScreen(
+                projectionsState
+            )
+        }
         composable(
             DayMateRoute.EditFuelTracker.route
         ) { navBackStackEntry ->
@@ -157,7 +172,7 @@ sealed class DayMateRoute(val route: String) {
     data object TripPlanner: DayMateRoute("trip_planner")
     data object FuelTracker: DayMateRoute("fuel_tracker")
     data object EditFuelTracker: DayMateRoute("edit_fuel_tracker/{fuelTrackerId}")
-    data object MoneyPlanner: DayMateRoute("money_planer")
+    data object MoneyMap: DayMateRoute("money_map")
 }
 
 private const val FuelTrackerIdKey = "{fuelTrackerId}"

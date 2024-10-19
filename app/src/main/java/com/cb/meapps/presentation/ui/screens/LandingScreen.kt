@@ -71,7 +71,7 @@ fun LandingScreen(
                     LandingItem(
                         "Money Map",
                         "\uD83E\uDDE0"
-                    ) { onNavigationClicked(DayMateRoute.MoneyPlanner) }
+                    ) { onNavigationClicked(DayMateRoute.MoneyMap) }
                 }
                 item {
                     LandingItem(

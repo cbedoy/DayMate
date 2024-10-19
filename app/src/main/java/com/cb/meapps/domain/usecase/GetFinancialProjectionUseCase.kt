@@ -1,7 +1,7 @@
 package com.cb.meapps.domain.usecase
 
 import com.cb.meapps.domain.asMoney
-import com.cb.meapps.presentation.ui.screens.ProjectionDay
+import com.cb.meapps.domain.model.ProjectionDay
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -12,7 +12,7 @@ class GetFinancialProjectionUseCase @Inject constructor() {
         initialSavings: Double,
         annualInterestRate: Double,
         biweeklyPayment: Double,
-        days: Int = 360
+        days: Int
     ): List<ProjectionDay> {
         val calendar = Calendar.getInstance()
         var totalSavings = initialSavings
@@ -29,6 +29,7 @@ class GetFinancialProjectionUseCase @Inject constructor() {
             val newCal = calendar.clone() as Calendar
             newCal.add(Calendar.DAY_OF_YEAR, dayIndex)
 
+            val year = newCal.get(Calendar.YEAR)
             val dayOfMonth = newCal.get(Calendar.DAY_OF_MONTH)
             var paymentToday = 0.0
 
@@ -58,6 +59,7 @@ class GetFinancialProjectionUseCase @Inject constructor() {
             val formattedDate = dateFormat.format(newCal.time).uppercase()
 
             ProjectionDay(
+                year = year,
                 date = formattedDate,
                 current = current.asMoney(),
                 paymentToday = paymentToday.asMoney(),

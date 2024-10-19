@@ -95,11 +95,18 @@ fun SettingsScreen(
                 )
             }
             item {
-                OutlinedButton({
-                    onNavigationClicked(DayMateRoute.FinancialProjection)
-                }, Modifier.fillMaxWidth().padding(16.dp)) {
-                    Text(text = "Open Financial projection")
-                }
+                CommonInputField(
+                    label = "Projection days",
+                    placeholder = "360 days",
+                    currentValue = settingsState.projectionDays,
+                    inputType = InputType.Number,
+                    onValueChange = {
+                        onAction(SettingsAction.ChangeProjectionDays(it))
+                    }
+                )
+            }
+            item {
+                LazyLaunchCta(onNavigationClicked)
             }
             item {
                 SettingsCardHeadline(settingsState.cards) {
@@ -110,7 +117,38 @@ fun SettingsScreen(
             item {
                 SettingsSwitchHeadline(false)
             }
+        }
+    }
+}
 
+@Composable
+private fun LazyLaunchCta(onNavigationClicked: (DayMateRoute) -> Unit) {
+    Column(
+        Modifier.fillMaxWidth().padding(16.dp),
+        Arrangement.spacedBy(8.dp)
+    ){
+        Text(
+            text = "Open your links bellow!",
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.primary
+        )
+        OutlinedButton({
+            onNavigationClicked(DayMateRoute.FinancialProjection)
+        }, Modifier
+            .fillMaxWidth()) {
+            Text(text = "Open Saving Journey")
+        }
+        OutlinedButton({
+            onNavigationClicked(DayMateRoute.CardPaymentCalendar)
+        }, Modifier
+            .fillMaxWidth()) {
+            Text(text = "Open Pay Day Calendar")
+        }
+        OutlinedButton({
+            onNavigationClicked(DayMateRoute.MoneyMap)
+        }, Modifier.fillMaxWidth()) {
+            Text(text = "Open Money Map")
         }
     }
 }

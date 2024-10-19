@@ -28,7 +28,8 @@ class SettingsViewModel @Inject constructor(
             initialSavings = preferencesDelegate.getInitialSavings(),
             annualInterestRate = preferencesDelegate.getAnnualInterestRate(),
             biweeklyPayment = preferencesDelegate.getBiweeklyPayment(),
-            skipOnboarding = preferencesDelegate.isSkipOnboarding()
+            skipOnboarding = preferencesDelegate.isSkipOnboarding(),
+            projectionDays = preferencesDelegate.getProjectionDays()
         )
     )
     val state: StateFlow<SettingsState> = _state.asStateFlow()
@@ -63,6 +64,12 @@ class SettingsViewModel @Inject constructor(
                 }
                 preferencesDelegate.saveBiweeklyPayment(action.newValue)
             }
+            is SettingsAction.ChangeProjectionDays -> {
+                _state.update { currentState ->
+                    currentState.copy(projectionDays = action.newValue)
+                }
+                preferencesDelegate.saveProjectionDays(action.newValue)
+            }
             SettingsAction.SkipOnboarding -> {
                 _state.update { currentState ->
                     currentState.copy(skipOnboarding = true)
@@ -86,6 +93,7 @@ data class SettingsState(
     val initialSavings: String = "",
     val annualInterestRate: String = "",
     val biweeklyPayment: String = "",
+    val projectionDays: String = "",
     val skipOnboarding: Boolean = false,
     val cards: List<Card> = getFakeCards(),
     val loading: Boolean = false
@@ -95,6 +103,7 @@ sealed class SettingsAction {
     data class ChangeInitialSavings(val newValue: String) : SettingsAction()
     data class ChangeAnnualInterestRate(val newValue: String) : SettingsAction()
     data class ChangeBiweeklyPayment(val newValue: String) : SettingsAction()
+    data class ChangeProjectionDays(val newValue: String) : SettingsAction()
     data class AddNewCard(
         val name: String,
         val cutOffDate: Int,

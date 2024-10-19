@@ -1,5 +1,8 @@
+@file:OptIn(ExperimentalFoundationApi::class)
+
 package com.cb.meapps.presentation.ui.screens
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,7 +21,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -26,6 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cb.meapps.R
+import com.cb.meapps.domain.model.ProjectionDay
 import com.cb.meapps.domain.toDoubleOrZero
 import com.cb.meapps.presentation.ui.common.DayMateScaffold
 import com.cb.meapps.presentation.viewmodel.financial.ProjectionsAction
@@ -54,45 +57,33 @@ fun FinancialProjectionScreen(
         title = stringResource(R.string.financial_projection_title),
         snackbarHostState = snackbarHostState
     ) { paddingValues ->
-        Column(
-            Modifier
-                .padding(paddingValues)
+        LazyColumn(
+            Modifier.padding(paddingValues)
         ) {
-            ProjectionHeader()
-            Column(
-                Modifier.fillMaxWidth()
-            ) {
-                // Use LazyColumn to display the list
-                LazyColumn {
-                    items(projectionsState.projectionDays) { projectionDay ->
-                        ProjectionRow(projectionDay = projectionDay)
-                    }
+
+            projectionsState.projectionDays.groupBy {
+                "${it.date.split(" ").last()} ${it.year}"
+            }.forEach { (monthYear, projections) ->
+                stickyHeader {
+                    MonthHeader(monthYear)
+                }
+                items(projections) { projectionDay ->
+                    ProjectionRow(projectionDay = projectionDay)
                 }
             }
         }
     }
 }
 
-data class ProjectionDay(
-    val date: String,
-    val current: String,
-    val paymentToday: String,
-    val dailyInterest: String,
-    val accumulatedInterest: String,
-    val totalSavings: String,
-    val isPaymentDay: Boolean
-)
-
 @Composable
-private fun ProjectionHeader() {
+private fun MonthHeader(monthYear: String) {
     Row(
-        modifier = Modifier
+        Modifier
             .fillMaxWidth()
             .background(colorScheme.onBackground)
-            .padding(8.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
+            .padding(16.dp)
     ) {
-        ProjectionHeaderText(text = "Date")
+        ProjectionHeaderText(text = monthYear)
         ProjectionHeaderText(text = "Current")
         ProjectionHeaderText(text = "Payment")
         ProjectionHeaderText(text = "Daily")
@@ -162,25 +153,27 @@ private fun PreviewProjectionRow() {
         Column {
             ProjectionRow(
                 ProjectionDay(
-                "1 Sept 2024",
-                "100.00",
-                "100.00",
-                "200.00",
-                "200.20",
-                "20202.00",
-                true
-            )
+                    year = 2024,
+                    date = "1 Sept 2024",
+                    current = "100.00",
+                    paymentToday = "100.00",
+                    dailyInterest = "200.00",
+                    accumulatedInterest = "200.20",
+                    totalSavings = "20202.00",
+                    isPaymentDay = true
+                )
             )
             ProjectionRow(
                 ProjectionDay(
-                "1 Sept 2024",
-                "100.00",
-                "100.00",
-                "200.00",
-                "200.20",
-                "20202.00",
-                false
-            )
+                    year = 2024,
+                    date = "1 Sept 2024",
+                    current = "100.00",
+                    paymentToday = "100.00",
+                    dailyInterest = "200.00",
+                    accumulatedInterest = "200.20",
+                    totalSavings = "20202.00",
+                    isPaymentDay = false
+                )
             )
         }
     }

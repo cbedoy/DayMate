@@ -1,5 +1,8 @@
+@file:OptIn(ExperimentalFoundationApi::class)
+
 package com.cb.meapps.presentation.ui.screens
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -25,6 +28,8 @@ import com.cb.meapps.R
 import com.cb.meapps.domain.fake.getFakeCards
 import com.cb.meapps.domain.model.Card
 import com.cb.meapps.presentation.ui.common.DayMateScaffold
+import com.cb.meapps.presentation.viewmodel.financial.ProjectionsAction
+import com.cb.meapps.presentation.viewmodel.financial.ProjectionsState
 import com.cb.meapps.presentation.viewmodel.settings.SettingsState
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -32,12 +37,11 @@ import java.util.Locale
 
 @Composable
 fun CardPaymentCalendarScreen(
-    settingsState: SettingsState
+    settingsState: SettingsState,
+    projectionsState: ProjectionsState,
+    onProjectionsAction : (ProjectionsAction) -> Unit
 ) {
-    val generateNextDays = generateNextDays(360)
-    val datesGroupedByMonth = generateNextDays.groupBy { it.monthName + " " + it.year }
-
-    val scope = rememberCoroutineScope()
+    rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 
     DayMateScaffold(
@@ -54,9 +58,11 @@ fun CardPaymentCalendarScreen(
             ) {
                 // Use LazyColumn to display the list
                 LazyColumn {
-                    datesGroupedByMonth.forEach { (monthYear, datesInMonth) ->
+                    projectionsState.datesGroupedByMonth.forEach { (monthYear, datesInMonth) ->
 
-                        item {
+                        stickyHeader(
+                            key = monthYear
+                        ) {
                             MonthHeader(monthYear)
                         }
 
@@ -133,42 +139,6 @@ fun PaymentItem(date: String, cardsDueToday: List<Card>) {
     }
 }
 
-private fun generateNextDays(days: Int = 360): List<DateInfo> {
-    val dateFormat = SimpleDateFormat("dd MMM", Locale.getDefault())
-    val monthFormat = SimpleDateFormat("MMMM", Locale.getDefault())
-    val currentDate = Calendar.getInstance()
-    val dates = mutableListOf<DateInfo>()
-
-    for (i in 0 until days) {
-        val dateString = dateFormat.format(currentDate.time).uppercase()
-        val day = currentDate.get(Calendar.DAY_OF_MONTH)
-        val month = currentDate.get(Calendar.MONTH) + 1 // Enero es 0, por eso sumamos 1
-        val monthName = monthFormat.format(currentDate.time)
-        val year = currentDate.get(Calendar.YEAR)
-
-        dates.add(
-            DateInfo(
-                date = dateString,
-                day = day,
-                month = month,
-                monthName = monthName,
-                year = year
-            )
-        )
-        currentDate.add(Calendar.DAY_OF_YEAR, 1)
-    }
-
-    return dates
-}
-
-private data class DateInfo(
-    val date: String,
-    val day: Int,
-    val month: Int,
-    val monthName: String,
-    val year: Int
-)
-
 @Preview
 @Composable
 private fun PreviewCardPaymentCalenderScreen() {
@@ -176,5 +146,7 @@ private fun PreviewCardPaymentCalenderScreen() {
         settingsState = SettingsState(
             cards = getFakeCards()
         ),
+        projectionsState = ProjectionsState(),
+        onProjectionsAction = {}
     )
 }

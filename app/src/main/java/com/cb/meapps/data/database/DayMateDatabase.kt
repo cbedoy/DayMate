@@ -11,7 +11,7 @@ import com.cb.meapps.data.model.FuelTrackerEntity
 
 @Database(
     entities = [DocumentEntity::class, CardEntity::class, FuelTrackerEntity::class],
-    version = 4
+    version = 5
 )
 abstract class DayMateDatabase : RoomDatabase() {
     abstract fun documentDao(): DocumentDao
