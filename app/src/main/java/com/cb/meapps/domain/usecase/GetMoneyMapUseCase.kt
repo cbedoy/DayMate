@@ -1,6 +1,6 @@
 package com.cb.meapps.domain.usecase
 
-import com.cb.meapps.data.PreferencesDelegate
+import com.cb.meapps.data.repository.PreferencesDelegate
 import com.cb.meapps.domain.asMoney
 import com.cb.meapps.domain.fake.getFakeCards
 import com.cb.meapps.domain.model.Card

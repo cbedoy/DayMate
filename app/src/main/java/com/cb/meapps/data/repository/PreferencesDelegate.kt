@@ -1,4 +1,4 @@
-package com.cb.meapps.data
+package com.cb.meapps.data.repository
 
 import android.content.Context
 import android.content.SharedPreferences

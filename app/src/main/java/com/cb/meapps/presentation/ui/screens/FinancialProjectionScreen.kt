@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
@@ -31,6 +32,7 @@ import com.cb.meapps.R
 import com.cb.meapps.domain.model.ProjectionDay
 import com.cb.meapps.domain.toDoubleOrZero
 import com.cb.meapps.presentation.ui.common.DayMateScaffold
+import com.cb.meapps.presentation.ui.common.StickyHeaderView
 import com.cb.meapps.presentation.viewmodel.financial.ProjectionsAction
 import com.cb.meapps.presentation.viewmodel.financial.ProjectionsState
 import com.cb.meapps.presentation.viewmodel.settings.SettingsState
@@ -65,7 +67,7 @@ fun FinancialProjectionScreen(
                 "${it.date.split(" ").last()} ${it.year}"
             }.forEach { (monthYear, projections) ->
                 stickyHeader {
-                    MonthHeader(monthYear)
+                    FinancialProjectionHeader(monthYear)
                 }
                 items(projections) { projectionDay ->
                     ProjectionRow(projectionDay = projectionDay)
@@ -76,30 +78,11 @@ fun FinancialProjectionScreen(
 }
 
 @Composable
-private fun MonthHeader(monthYear: String) {
-    Row(
-        Modifier
-            .fillMaxWidth()
-            .background(colorScheme.onBackground)
-            .padding(16.dp)
-    ) {
-        ProjectionHeaderText(text = monthYear)
-        ProjectionHeaderText(text = "Current")
-        ProjectionHeaderText(text = "Payment")
-        ProjectionHeaderText(text = "Daily")
-        ProjectionHeaderText(text = "Accumulated")
-        ProjectionHeaderText(text = "Total")
-    }
+private fun FinancialProjectionHeader(monthYear: String) {
+    StickyHeaderView(
+        listOf(monthYear, "Current", "Payment", "Daily", "Daily", "Accumulated", "Total")
+    )
 }
-
-@Composable
-private fun RowScope.ProjectionHeaderText(text: String) = Text(
-    text = text,
-    Modifier.weight(1.0f),
-    color = colorScheme.onPrimary,
-    fontWeight = FontWeight.SemiBold,
-    fontSize = 10.sp
-)
 
 @Composable
 private fun ProjectionRow(projectionDay: ProjectionDay) {
@@ -132,7 +115,8 @@ private fun RowScope.ProjectionRowText(text: String, isPaymentDay: Boolean) {
         color = if (isPaymentDay) colorScheme.onPrimary else {
             colorScheme.primary
         },
-        fontWeight = if (isPaymentDay) FontWeight.SemiBold else FontWeight.Light
+        fontWeight = if (isPaymentDay) FontWeight.SemiBold else FontWeight.Light,
+        maxLines = 1
     )
 }
 

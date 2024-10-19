@@ -1,7 +1,7 @@
 package com.cb.meapps.domain.usecase
 
-import com.cb.meapps.data.CardsRepository
 import com.cb.meapps.data.model.CardEntity
+import com.cb.meapps.data.repository.CardsRepository
 import kotlinx.coroutines.delay
 import javax.inject.Inject
 

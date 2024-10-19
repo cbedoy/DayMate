@@ -1,6 +1,8 @@
 package com.cb.meapps.domain.fake
 
 import com.cb.meapps.domain.model.Card
+import com.cb.meapps.domain.model.CardPayment
+import com.cb.meapps.domain.model.CombinedProjection
 import com.cb.meapps.domain.model.Document
 import com.cb.meapps.domain.model.FileType
 import com.cb.meapps.domain.model.FuelTracker
@@ -72,6 +74,62 @@ fun getFakeDocs(): List<Document> {
             alias = "Landscape Image",
             filePath = "/storage/emulated/0/Pictures/image2.jpg",
             fileType = FileType.IMAGE
+        )
+    )
+}
+
+fun getFakeCombinedProjections(): List<CombinedProjection> {
+    return listOf(
+        CombinedProjection(
+            date = "15 Jan",
+            current = "$1000",
+            paymentToday = "$500",
+            dailyInterest = "$100",
+            accumulatedInterest = "$10",
+            totalSavings = "$100",
+            isPaymentDay = false,
+            cardPayments = listOf(
+                CardPayment("CitiBanamex", 300.0f),
+                CardPayment("American Express", 500.0f)
+            )
+        ),
+        CombinedProjection(
+            date = "16 Jan",
+            current = "$1200",
+            paymentToday = "$600",
+            dailyInterest = "$120",
+            accumulatedInterest = "$20",
+            totalSavings = "$150",
+            isPaymentDay = true,
+            cardPayments = listOf(
+                CardPayment("HSBC", 400.0f),
+                CardPayment("Santander", 250.0f)
+            )
+        ),
+        CombinedProjection(
+            date = "17 Jan",
+            current = "$1300",
+            paymentToday = "$300",
+            dailyInterest = "$110",
+            accumulatedInterest = "$30",
+            totalSavings = "$200",
+            isPaymentDay = false,
+            cardPayments = listOf(
+                CardPayment("BBVA", 100.0f)
+            )
+        ),
+        CombinedProjection(
+            date = "18 Jan",
+            current = "$1400",
+            paymentToday = "$700",
+            dailyInterest = "$130",
+            accumulatedInterest = "$40",
+            totalSavings = "$300",
+            isPaymentDay = true,
+            cardPayments = listOf(
+                CardPayment("Scotiabank", 500.0f),
+                CardPayment("Banorte", 200.0f)
+            )
         )
     )
 }

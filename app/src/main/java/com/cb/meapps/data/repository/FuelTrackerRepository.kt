@@ -1,4 +1,4 @@
-package com.cb.meapps.data
+package com.cb.meapps.data.repository
 
 import com.cb.meapps.data.dao.FuelTrackerDao
 import com.cb.meapps.data.model.FuelTrackerEntity

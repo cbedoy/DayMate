@@ -28,6 +28,7 @@ import com.cb.meapps.R
 import com.cb.meapps.domain.fake.getFakeCards
 import com.cb.meapps.domain.model.Card
 import com.cb.meapps.presentation.ui.common.DayMateScaffold
+import com.cb.meapps.presentation.ui.common.StickyHeaderView
 import com.cb.meapps.presentation.viewmodel.financial.ProjectionsAction
 import com.cb.meapps.presentation.viewmodel.financial.ProjectionsState
 import com.cb.meapps.presentation.viewmodel.settings.SettingsState
@@ -63,7 +64,7 @@ fun CardPaymentCalendarScreen(
                         stickyHeader(
                             key = monthYear
                         ) {
-                            MonthHeader(monthYear)
+                            CardPaymentCalendarHeader(monthYear)
                         }
 
                         items(datesInMonth) { dateInfo ->
@@ -80,20 +81,8 @@ fun CardPaymentCalendarScreen(
 }
 
 @Composable
-private fun MonthHeader(monthYear: String) {
-    Column(
-        Modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.tertiaryContainer)
-            .padding(16.dp)
-    ) {
-        Text(
-            text = monthYear.uppercase(),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.tertiary,
-            fontWeight = FontWeight.SemiBold
-        )
-    }
+private fun CardPaymentCalendarHeader(monthYear: String) {
+    StickyHeaderView(listOf(monthYear.uppercase()))
 }
 
 @Composable

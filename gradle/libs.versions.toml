@@ -8,11 +8,17 @@ espressoCore = "3.6.1"
 lifecycleRuntimeKtx = "2.8.6"
 activityCompose = "1.7.2"
 composeBom = "2024.09.03"
+composeVersion = "1.5.1"
 navigationCompose = "2.8.2"
 daggerHilt = "2.48"
 hiltNavigationCompose = "1.2.0"
 roomVersion = "2.6.1"
 accompanist = "0.30.0"
+compileSdk = "34"
+minSdk = "24"
+targetSdk = "34"
+versionCode = "1"
+versionName = "1.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }

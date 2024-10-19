@@ -1,6 +1,6 @@
 package com.cb.meapps.domain.usecase
 
-import com.cb.meapps.data.CardsRepository
+import com.cb.meapps.data.repository.CardsRepository
 import com.cb.meapps.domain.fake.IsFakeDataEnabledUseCase
 import com.cb.meapps.domain.fake.getFakeCards
 import com.cb.meapps.domain.model.Card

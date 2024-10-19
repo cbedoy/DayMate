@@ -2,8 +2,8 @@ package com.cb.meapps.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.cb.meapps.data.FuelTrackerRepository
 import com.cb.meapps.data.model.FuelTrackerEntity
+import com.cb.meapps.data.repository.FuelTrackerRepository
 import com.cb.meapps.domain.fake.getFakeTracks
 import com.cb.meapps.domain.model.FuelTracker
 import com.cb.meapps.domain.model.SummaryFullTracker

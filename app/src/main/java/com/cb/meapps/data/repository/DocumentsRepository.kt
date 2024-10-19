@@ -1,4 +1,4 @@
-package com.cb.meapps.data
+package com.cb.meapps.data.repository
 
 import com.cb.meapps.data.dao.DocumentDao
 import com.cb.meapps.data.model.DocumentEntity

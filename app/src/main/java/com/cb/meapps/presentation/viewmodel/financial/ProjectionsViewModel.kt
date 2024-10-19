@@ -1,7 +1,7 @@
 package com.cb.meapps.presentation.viewmodel.financial
 
 import androidx.lifecycle.ViewModel
-import com.cb.meapps.data.PreferencesDelegate
+import com.cb.meapps.data.repository.PreferencesDelegate
 import com.cb.meapps.domain.model.CombinedProjection
 import com.cb.meapps.domain.model.DateInfo
 import com.cb.meapps.domain.model.ProjectionDay

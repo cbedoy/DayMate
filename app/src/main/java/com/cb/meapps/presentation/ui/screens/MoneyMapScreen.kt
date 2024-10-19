@@ -2,6 +2,7 @@
 
 package com.cb.meapps.presentation.ui.screens
 
+
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -15,15 +16,18 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.cb.meapps.domain.fake.getFakeCombinedProjections
+import com.cb.meapps.domain.model.CardPayment
 import com.cb.meapps.domain.model.CombinedProjection
 import com.cb.meapps.presentation.ui.common.DayMateScaffold
+import com.cb.meapps.presentation.ui.common.StickyHeaderView
 import com.cb.meapps.presentation.viewmodel.financial.ProjectionsState
 
 @Composable
@@ -48,21 +52,9 @@ fun MoneyMapScreen(
 
 @Composable
 private fun MoneyMapHeader() {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Color.White)
-            .padding(8.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        MoneyMapText(text = "Date")
-        MoneyMapText(text = "Current")
-        MoneyMapText(text = "Payment")
-        MoneyMapText(text = "Daily")
-        MoneyMapText(text = "Accumulated")
-        MoneyMapText(text = "Total")
-        MoneyMapText(text = "Cards")
-    }
+    StickyHeaderView(
+        listOf("Date", "Current", "Payment", "Daily", "Accumulated", "Total", "Cards")
+    )
 }
 
 @Composable
@@ -80,7 +72,8 @@ private fun MoneyMapItem(combinedProjection: CombinedProjection) {
             .fillMaxWidth()
             .background(background)
             .padding(8.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         MoneyMapText(text = combinedProjection.date, isPaymentDay)
         MoneyMapText(text = combinedProjection.current, isPaymentDay)
@@ -88,12 +81,15 @@ private fun MoneyMapItem(combinedProjection: CombinedProjection) {
         MoneyMapText(text = combinedProjection.dailyInterest, isPaymentDay)
         MoneyMapText(text = combinedProjection.accumulatedInterest, isPaymentDay)
         MoneyMapText(text = combinedProjection.totalSavings, isPaymentDay)
-        MoneyMapText(text = combinedProjection.cardPayments.joinToString(", ") { it.cardName }, isPaymentDay)
+        MoneyMapCardNameText(cards = combinedProjection.cardPayments, isPaymentDay)
     }
 }
 
 @Composable
-private fun RowScope.MoneyMapText(text: String, isPaymentDay: Boolean = false) {
+private fun RowScope.MoneyMapText(
+    text: String,
+    isPaymentDay: Boolean = false
+) {
     Text(
         text = text,
         modifier = Modifier.weight(1.0f),
@@ -105,6 +101,39 @@ private fun RowScope.MoneyMapText(text: String, isPaymentDay: Boolean = false) {
         maxLines = 1,
         textAlign = TextAlign.Center
     )
+}
+
+@Composable
+private fun RowScope.MoneyMapCardNameText(
+    cards: List<CardPayment>,
+    isPaymentDay: Boolean = false
+) {
+
+    val text = cards.joinToString(", ") { it.cardName }
+
+    Text(
+        text = text,
+        modifier = Modifier.weight(1.0f),
+        fontSize = 8.sp,
+        color = if (isPaymentDay) MaterialTheme.colorScheme.onPrimary else {
+            MaterialTheme.colorScheme.primary
+        },
+        fontWeight = if (isPaymentDay) FontWeight.Bold else FontWeight.Normal,
+        textAlign = TextAlign.Center
+    )
+}
+
+@Preview
+@Composable
+private fun PreviewMoneyMapItem() {
+
+    val combinedProjections = getFakeCombinedProjections()
+
+    Column {
+        combinedProjections.map { combinedProjection ->
+            MoneyMapItem(combinedProjection)
+        }
+    }
 }
 
 

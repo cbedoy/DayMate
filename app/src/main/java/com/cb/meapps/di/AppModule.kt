@@ -3,11 +3,11 @@ package com.cb.meapps.di
 import android.app.Application
 import android.content.Context
 import androidx.room.Room
-import com.cb.meapps.data.PreferencesDelegate
 import com.cb.meapps.data.dao.CardDao
 import com.cb.meapps.data.dao.DocumentDao
 import com.cb.meapps.data.dao.FuelTrackerDao
 import com.cb.meapps.data.database.DayMateDatabase
+import com.cb.meapps.data.repository.PreferencesDelegate
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

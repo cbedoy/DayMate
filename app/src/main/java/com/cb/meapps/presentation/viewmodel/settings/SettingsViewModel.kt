@@ -2,7 +2,7 @@ package com.cb.meapps.presentation.viewmodel.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.cb.meapps.data.PreferencesDelegate
+import com.cb.meapps.data.repository.PreferencesDelegate
 import com.cb.meapps.domain.fake.getFakeCards
 import com.cb.meapps.domain.model.Card
 import com.cb.meapps.domain.usecase.AddNewCardUseCase
