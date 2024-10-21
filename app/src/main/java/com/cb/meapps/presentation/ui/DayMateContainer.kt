@@ -100,7 +100,6 @@ fun DayMateContainer(
         }
         composable(DayMateRoute.FinancialProjection.route) {
             FinancialProjectionScreen(
-                settingsState,
                 projectionsState = projectionsState,
                 onProjectionsAction = onProjectionsAction,
             )

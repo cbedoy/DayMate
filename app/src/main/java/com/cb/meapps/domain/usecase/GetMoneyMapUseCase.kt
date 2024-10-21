@@ -12,19 +12,13 @@ import com.cb.meapps.domain.toDoubleOrZero
 import javax.inject.Inject
 
 class GetMoneyMapUseCase @Inject constructor(
-    private val preferencesDelegate: PreferencesDelegate,
     private val getFinancialProjectionUseCase: GetFinancialProjectionUseCase,
     private val getCardCalendarUseCase: GetCardCalendarUseCase
 ) {
-    operator fun invoke(days: Int): List<CombinedProjection> {
+    operator fun invoke(): List<CombinedProjection> {
         val cards = getFakeCards()
-        val projections = getFinancialProjectionUseCase(
-            preferencesDelegate.getInitialSavings().toDoubleOrZero(),
-            preferencesDelegate.getAnnualInterestRate().toDoubleOrZero(),
-            preferencesDelegate.getBiweeklyPayment().toDoubleOrZero(),
-            days
-        )
-        val cardDates = getCardCalendarUseCase.invoke(days)
+        val projections = getFinancialProjectionUseCase()
+        val cardDates = getCardCalendarUseCase.invoke()
 
         return combineProjections(projections, cardDates, cards)
     }

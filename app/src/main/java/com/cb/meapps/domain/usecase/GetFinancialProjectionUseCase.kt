@@ -1,19 +1,24 @@
 package com.cb.meapps.domain.usecase
 
+import com.cb.meapps.data.repository.PreferencesDelegate
 import com.cb.meapps.domain.asMoney
 import com.cb.meapps.domain.model.ProjectionDay
+import com.cb.meapps.domain.toDoubleOrZero
+import com.cb.meapps.domain.toIntOrDefault
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 import javax.inject.Inject
 
-class GetFinancialProjectionUseCase @Inject constructor() {
-    operator fun invoke(
-        initialSavings: Double,
-        annualInterestRate: Double,
-        biweeklyPayment: Double,
-        days: Int
-    ): List<ProjectionDay> {
+class GetFinancialProjectionUseCase @Inject constructor(
+    private val preferencesDelegate: PreferencesDelegate
+) {
+    operator fun invoke(): List<ProjectionDay> {
+        val days = preferencesDelegate.getProjectionDays().toIntOrDefault(360)
+        val initialSavings = preferencesDelegate.getInitialSavings().toDoubleOrZero()
+        val annualInterestRate = preferencesDelegate.getAnnualInterestRate().toDoubleOrZero()
+        val biweeklyPayment = preferencesDelegate.getBiweeklyPayment().toDoubleOrZero()
+
         val calendar = Calendar.getInstance()
         var totalSavings = initialSavings
         var accumulatedInterest = 0.0

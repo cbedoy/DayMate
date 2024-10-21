@@ -19,8 +19,7 @@ import javax.inject.Inject
 class ProjectionsViewModel @Inject constructor(
     private val getFinancialProjectionUseCase: GetFinancialProjectionUseCase,
     private val getCardCalendarUseCase: GetCardCalendarUseCase,
-    private val getMoneyMapUseCase: GetMoneyMapUseCase,
-    private val sharedPreferencesDelegate: PreferencesDelegate
+    private val getMoneyMapUseCase: GetMoneyMapUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(ProjectionsState())
@@ -29,23 +28,13 @@ class ProjectionsViewModel @Inject constructor(
     fun dispatch(action: ProjectionsAction) {
         when(action) {
             is ProjectionsAction.CalculateFinancialProjection -> {
-
-                val days = sharedPreferencesDelegate.getProjectionDays().toIntOrNull() ?: 360
-
-                val projections = getFinancialProjectionUseCase(
-                    action.initialSavings,
-                    action.annualInterestRate,
-                    action.biweeklyPayment,
-                    days
-                )
+                val projections = getFinancialProjectionUseCase()
                 _state.update {
                     it.copy(projectionDays = projections)
                 }
             }
             is ProjectionsAction.CalculateCardPaymentCalendar -> {
-                val days = sharedPreferencesDelegate.getProjectionDays().toIntOrNull() ?: 360
-
-                val generateNextDays = getCardCalendarUseCase(days)
+                val generateNextDays = getCardCalendarUseCase()
                 val datesGroupedByMonth = generateNextDays.groupBy { it.monthName + " " + it.year }
                 _state.update {
                     it.copy(
@@ -55,7 +44,7 @@ class ProjectionsViewModel @Inject constructor(
             }
 
             ProjectionsAction.LoadMoneyMap -> {
-                val combinedProjections = getMoneyMapUseCase(360)
+                val combinedProjections = getMoneyMapUseCase()
                 _state.update {
                     it.copy(
                         combinedProjections = combinedProjections
@@ -73,11 +62,7 @@ data class ProjectionsState(
 )
 
 sealed class ProjectionsAction {
-    data class CalculateFinancialProjection(
-        val initialSavings: Double,
-        val annualInterestRate: Double,
-        val biweeklyPayment: Double,
-    ) : ProjectionsAction()
+    data object CalculateFinancialProjection : ProjectionsAction()
 
     data object CalculateCardPaymentCalendar: ProjectionsAction()
 

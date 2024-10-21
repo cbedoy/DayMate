@@ -1,13 +1,18 @@
 package com.cb.meapps.domain.usecase
 
+import com.cb.meapps.data.repository.PreferencesDelegate
 import com.cb.meapps.domain.model.DateInfo
+import com.cb.meapps.domain.toIntOrDefault
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 import javax.inject.Inject
 
-class GetCardCalendarUseCase @Inject constructor() {
-    operator fun invoke(days: Int): List<DateInfo> {
+class GetCardCalendarUseCase @Inject constructor(
+    private val preferencesDelegate: PreferencesDelegate
+) {
+    operator fun invoke(): List<DateInfo> {
+        val days = preferencesDelegate.getProjectionDays().toIntOrDefault(360)
         return  generateNextDays(days)
     }
 

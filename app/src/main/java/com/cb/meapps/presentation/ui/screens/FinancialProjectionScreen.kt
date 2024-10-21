@@ -38,17 +38,12 @@ import com.cb.meapps.presentation.viewmodel.settings.SettingsState
 
 @Composable
 fun FinancialProjectionScreen(
-    settingsState: SettingsState,
     projectionsState: ProjectionsState,
     onProjectionsAction : (ProjectionsAction) -> Unit
 ) {
     LaunchedEffect(Unit){
         onProjectionsAction(
-            ProjectionsAction.CalculateFinancialProjection(
-                settingsState.initialSavings.toDoubleOrZero(),
-                settingsState.annualInterestRate.toDoubleOrZero(),
-                settingsState.biweeklyPayment.toDoubleOrZero()
-            )
+            ProjectionsAction.CalculateFinancialProjection
         )
     }
 
@@ -170,7 +165,6 @@ private fun PreviewProjectionRow() {
 fun PreviewFinancialProjection() {
     Surface {
         FinancialProjectionScreen(
-            settingsState = SettingsState(),
             projectionsState = ProjectionsState(),
             onProjectionsAction = {}
         )

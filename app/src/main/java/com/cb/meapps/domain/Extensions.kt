@@ -11,6 +11,10 @@ fun String.toDoubleOrZero(): Double {
     return this.toDoubleOrNull() ?: 0.0
 }
 
+fun String.toIntOrDefault(default: Int = 0): Int {
+    return this.toIntOrNull() ?: default
+}
+
 fun String.toFloatOrZero(): Float {
     return this.toFloatOrNull() ?: 0.0f
 }
