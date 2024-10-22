@@ -2,10 +2,12 @@ package com.cb.meapps.presentation.viewmodel.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.cb.meapps.data.model.AdditionalPayment
 import com.cb.meapps.data.repository.PreferencesDelegate
 import com.cb.meapps.domain.fake.getFakeCards
 import com.cb.meapps.domain.model.Card
 import com.cb.meapps.domain.usecase.AddNewCardUseCase
+import com.cb.meapps.domain.usecase.GenerateDaysUseCase
 import com.cb.meapps.domain.usecase.GetCardsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,7 +22,8 @@ import javax.inject.Inject
 class SettingsViewModel @Inject constructor(
     private val preferencesDelegate: PreferencesDelegate,
     private val addNewCardUseCase: AddNewCardUseCase,
-    private val getCardsUseCase: GetCardsUseCase
+    private val getCardsUseCase: GetCardsUseCase,
+    private val generateDaysUseCase: GenerateDaysUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(
@@ -29,7 +32,9 @@ class SettingsViewModel @Inject constructor(
             annualInterestRate = preferencesDelegate.getAnnualInterestRate(),
             biweeklyPayment = preferencesDelegate.getBiweeklyPayment(),
             skipOnboarding = preferencesDelegate.isSkipOnboarding(),
-            projectionDays = preferencesDelegate.getProjectionDays()
+            projectionDays = preferencesDelegate.getProjectionDays(),
+            additionalPayments = preferencesDelegate.getAdditionalPayments(),
+            days = generateDaysUseCase.invoke()
         )
     )
     val state: StateFlow<SettingsState> = _state.asStateFlow()
@@ -85,6 +90,37 @@ class SettingsViewModel @Inject constructor(
                     addNewCardUseCase(action.name, action.cutOffDate, action.dueDate, action.debt)
                 }
             }
+            is SettingsAction.SaveAdditionalPayment -> {
+                val additionalPayments = _state.value.additionalPayments.toMutableList()
+                additionalPayments.add(
+                    AdditionalPayment(
+                        name = action.name,
+                        day = action.day,
+                        value = action.value
+                    )
+                )
+                preferencesDelegate.saveAdditionalPayments(additionalPayments)
+
+                val newAdditionalPayments = preferencesDelegate.getAdditionalPayments()
+                _state.update { currentState ->
+                    currentState.copy(
+                        additionalPayments = newAdditionalPayments
+                    )
+                }
+            }
+            is SettingsAction.DeleteAdditionalPayment -> {
+                val additionalPayments = _state.value.additionalPayments.toMutableList()
+                val items = additionalPayments.filter { it.name != action.name }
+
+                preferencesDelegate.saveAdditionalPayments(items)
+
+                val newAdditionalPayments = preferencesDelegate.getAdditionalPayments()
+                _state.update { currentState ->
+                    currentState.copy(
+                        additionalPayments = newAdditionalPayments
+                    )
+                }
+            }
         }
     }
 }
@@ -96,7 +132,9 @@ data class SettingsState(
     val projectionDays: String = "",
     val skipOnboarding: Boolean = false,
     val cards: List<Card> = getFakeCards(),
-    val loading: Boolean = false
+    val loading: Boolean = false,
+    val days: List<String> = emptyList(),
+    val additionalPayments: List<AdditionalPayment> = emptyList()
 )
 
 sealed class SettingsAction {
@@ -104,6 +142,9 @@ sealed class SettingsAction {
     data class ChangeAnnualInterestRate(val newValue: String) : SettingsAction()
     data class ChangeBiweeklyPayment(val newValue: String) : SettingsAction()
     data class ChangeProjectionDays(val newValue: String) : SettingsAction()
+
+    data class SaveAdditionalPayment(val name: String, val day: Int, val value: Float) : SettingsAction()
+    data class DeleteAdditionalPayment(val name: String): SettingsAction()
     data class AddNewCard(
         val name: String,
         val cutOffDate: Int,

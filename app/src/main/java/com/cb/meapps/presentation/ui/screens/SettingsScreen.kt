@@ -28,9 +28,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cb.meapps.R
+import com.cb.meapps.data.model.AdditionalPayment
 import com.cb.meapps.domain.fake.getFakeCards
 import com.cb.meapps.domain.model.Card
 import com.cb.meapps.presentation.ui.DayMateRoute
+import com.cb.meapps.presentation.ui.common.AdditionalPaymentItem
+import com.cb.meapps.presentation.ui.common.AdditionalPaymentSection
 import com.cb.meapps.presentation.ui.common.CommonInputField
 import com.cb.meapps.presentation.ui.common.DayMateScaffold
 import com.cb.meapps.presentation.ui.common.Header
@@ -109,11 +112,18 @@ fun SettingsScreen(
                 LazyLaunchCta(onNavigationClicked)
             }
             item {
+                AdditionalPaymentSection(
+                    settingsState.additionalPayments,
+                    onDelete = {
+                        onAction(SettingsAction.DeleteAdditionalPayment(it.name))
+                    }
+                )
+            }
+            item {
                 SettingsCardHeadline(settingsState.cards) {
                     onNavigationClicked(DayMateRoute.AddNewCard)
                 }
             }
-
             item {
                 SettingsSwitchHeadline(false)
             }
@@ -149,6 +159,11 @@ private fun LazyLaunchCta(onNavigationClicked: (DayMateRoute) -> Unit) {
             onNavigationClicked(DayMateRoute.MoneyMap)
         }, Modifier.fillMaxWidth()) {
             Text(text = "Open Money Map")
+        }
+        OutlinedButton({
+            onNavigationClicked(DayMateRoute.AdditionalPayments)
+        }, Modifier.fillMaxWidth()) {
+            Text(text = "Additional Payments")
         }
     }
 }
@@ -312,7 +327,13 @@ private fun PreviewNoCardView() {
 @Composable
 private fun PreviewSettingsScreen() {
     SettingsScreen(
-        settingsState = SettingsState(),
+        settingsState = SettingsState(
+            additionalPayments = listOf(
+                AdditionalPayment("Tax return", 32, 1000f),
+                AdditionalPayment("Warranty return", 100, 500f),
+                AdditionalPayment("Family expense", 200, 800f)
+            )
+        ),
         onAction = {},
         onNavigationClicked = {}
     )

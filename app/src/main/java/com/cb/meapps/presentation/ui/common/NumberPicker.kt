@@ -5,11 +5,35 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.viewinterop.AndroidView
 
 @Composable
-fun NumberPicker(value: Int, range: IntRange, onChanged: (newValue: Int) -> Unit) {
+fun NumberPicker(
+    value: Int,
+    range: IntRange,
+    onChanged: (newValue: Int) -> Unit
+) {
     AndroidView(factory = { context ->
         NumberPicker(context).apply {
             minValue =  range.first
             maxValue = range.last
+            setValue(value)
+        }
+    }, update = {
+        it.setOnValueChangedListener { _, _, newVal ->
+            onChanged(newVal)
+        }
+    })
+}
+
+@Composable
+fun ValuePicker(
+    value: Int,
+    values: List<String>,
+    onChanged: (newValue: Int) -> Unit
+) {
+    AndroidView(factory = { context ->
+        NumberPicker(context).apply {
+            minValue =  0
+            maxValue = values.size - 1
+            displayedValues = values.toTypedArray()
             setValue(value)
         }
     }, update = {

@@ -30,6 +30,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cb.meapps.R
+import com.cb.meapps.presentation.ui.screens.dialog.NumberPickerDialog
+import com.cb.meapps.presentation.ui.screens.dialog.ValuePickerDialog
 
 @Composable
 fun CommonInputField(
@@ -63,7 +65,7 @@ fun CommonInputField(
                     onValueChange(newValue)
                 }
             }
-            is InputType.NumberPicker -> {
+            is InputType.NumberPicker, is InputType.ValuePicker -> {
                 onValueChange(newValue)
             }
         }
@@ -74,11 +76,11 @@ fun CommonInputField(
         InputType.Decimal -> KeyboardOptions(keyboardType = KeyboardType.Decimal)
         InputType.Text -> KeyboardOptions(keyboardType = KeyboardType.Text)
         InputType.Email -> KeyboardOptions(keyboardType = KeyboardType.Email)
-        is InputType.NumberPicker -> KeyboardOptions.Default
+        is InputType.NumberPicker, is InputType.ValuePicker -> KeyboardOptions.Default
     }
 
     val isReadyOnly = when (inputType) {
-        is InputType.NumberPicker -> true
+        is InputType.NumberPicker, is InputType.ValuePicker -> true
         else -> false
     }
 
@@ -137,65 +139,37 @@ fun CommonInputField(
         }
 
         if (showDialog) {
-            NumberPickerDialog(
-                initialValue = currentValue.toIntOrNull() ?: 0,
-                onDismiss = { showDialog = false },
-                onValueSelected = { newValue ->
-                    onValueChange(newValue.toString())
-                    showDialog = false
-                },
-                range = if (inputType is InputType.NumberPicker) {
-                    inputType.range
-                } else {
-                    return
+            when (inputType) {
+                is InputType.NumberPicker -> {
+                    NumberPickerDialog(
+                        initialValue = currentValue.toIntOrNull() ?: 0,
+                        onDismiss = { showDialog = false },
+                        onValueSelected = { newValue ->
+                            onValueChange(newValue.toString())
+                            showDialog = false
+                        },
+                        range = inputType.range
+                    )
                 }
-            )
+
+                is InputType.ValuePicker -> {
+                    ValuePickerDialog(
+                        initialValue = inputType.selectedIndex,
+                        onDismiss = { showDialog = false },
+                        values = inputType.values,
+                        onValueSelected = { newValue ->
+                            onValueChange(inputType.values[newValue])
+                            showDialog = false
+                        }
+                    )
+                }
+
+                else -> {
+
+                }
+            }
         }
     }
-}
-
-@Composable
-private fun NumberPickerDialog(
-    initialValue: Int,
-    onDismiss: () -> Unit,
-    onValueSelected: (Int) -> Unit,
-    range: IntRange
-) {
-    var selectedValue by remember { mutableIntStateOf(initialValue) }
-
-    AlertDialog(
-        onDismissRequest = { onDismiss() },
-        title = { Text("Pick a number") },
-        text = {
-            Column(
-                Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.Center,
-                Alignment.CenterHorizontally
-            ) {
-                NumberPicker(
-                    value = selectedValue,
-                    range = range,
-                    onChanged = { newValue ->
-                        selectedValue = newValue
-                    }
-                )
-            }
-        },
-        confirmButton = {
-            Button(
-                onClick = {
-                    onValueSelected(selectedValue)
-                }
-            ) {
-                Text("OK")
-            }
-        },
-        dismissButton = {
-            Button(onClick = { onDismiss() }) {
-                Text("Cancel")
-            }
-        }
-    )
 }
 
 sealed class InputType {
@@ -205,6 +179,11 @@ sealed class InputType {
     data object Email : InputType()
 
     data class NumberPicker(val range: IntRange): InputType()
+
+    data class ValuePicker(
+        val selectedIndex: Int = 0,
+        val values: List<String>
+    ): InputType()
 }
 
 @Preview

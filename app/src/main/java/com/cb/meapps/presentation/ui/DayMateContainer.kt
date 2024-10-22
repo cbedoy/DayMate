@@ -12,6 +12,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.cb.meapps.presentation.ui.screens.AddCardScreen
+import com.cb.meapps.presentation.ui.screens.AdditionalPaymentScreen
 import com.cb.meapps.presentation.ui.screens.CardPaymentCalendarScreen
 import com.cb.meapps.presentation.ui.screens.DocsScreen
 import com.cb.meapps.presentation.ui.screens.EditFuelTrackerScreen
@@ -106,11 +107,8 @@ fun DayMateContainer(
         }
         composable(DayMateRoute.AddNewCard.route) {
             AddCardScreen(
-                onAction = {},
-                onCommit = { /*TODO*/ },
-                onCancel = {
-                    navController.popBackStack()
-                }
+                settingsState = settingsState,
+                onAction = onSettingsAction,
             )
         }
         composable(DayMateRoute.Settings.route) {
@@ -140,6 +138,9 @@ fun DayMateContainer(
             MoneyMapScreen(
                 projectionsState
             )
+        }
+        composable(DayMateRoute.AdditionalPayments.route) {
+            AdditionalPaymentScreen(settingsState, onSettingsAction)
         }
         composable(
             DayMateRoute.EditFuelTracker.route
@@ -172,6 +173,7 @@ sealed class DayMateRoute(val route: String) {
     data object FuelTracker: DayMateRoute("fuel_tracker")
     data object EditFuelTracker: DayMateRoute("edit_fuel_tracker/{fuelTrackerId}")
     data object MoneyMap: DayMateRoute("money_map")
+    data object AdditionalPayments: DayMateRoute("additional_payments")
 }
 
 private const val FuelTrackerIdKey = "{fuelTrackerId}"

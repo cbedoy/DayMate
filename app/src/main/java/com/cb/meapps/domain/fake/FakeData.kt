@@ -1,5 +1,6 @@
 package com.cb.meapps.domain.fake
 
+import com.cb.meapps.data.model.AdditionalPayment
 import com.cb.meapps.domain.model.Card
 import com.cb.meapps.domain.model.CardPayment
 import com.cb.meapps.domain.model.CombinedProjection
@@ -131,5 +132,13 @@ fun getFakeCombinedProjections(): List<CombinedProjection> {
                 CardPayment("Banorte", 200.0f)
             )
         )
+    )
+}
+
+fun getFakeAdditionalPayments(): List<AdditionalPayment> {
+    return listOf(
+        AdditionalPayment("Tax return", 32, 1000f),
+        AdditionalPayment("Warranty return", 100, 500f),
+        AdditionalPayment("Family expense", 200, 800f)
     )
 }

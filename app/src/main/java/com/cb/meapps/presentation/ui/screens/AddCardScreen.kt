@@ -10,8 +10,12 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -22,16 +26,26 @@ import com.cb.meapps.presentation.ui.common.DayMateScaffold
 import com.cb.meapps.presentation.ui.common.Header
 import com.cb.meapps.presentation.ui.common.InputType
 import com.cb.meapps.presentation.viewmodel.settings.SettingsAction
+import com.cb.meapps.presentation.viewmodel.settings.SettingsState
 import kotlinx.coroutines.launch
 
 @Composable
 fun AddCardScreen(
-    onAction: (SettingsAction) -> Unit,
-    onCommit: () -> Unit,
-    onCancel: () -> Unit
+    settingsState: SettingsState,
+    onAction: (SettingsAction) -> Unit
 ) {
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
+
+    var cardName by remember { mutableStateOf("") }
+    var cutOfDate by remember { mutableStateOf("") }
+    var paymentCutOfDate by remember { mutableStateOf("") }
+
+    val saveButtonEnabled by remember {
+        derivedStateOf {
+            cardName.isNotEmpty() && cutOfDate.isNotEmpty() && paymentCutOfDate.isNotEmpty()
+        }
+    }
 
     DayMateScaffold(
         title = stringResource(R.string.add_new_card_title),
@@ -45,23 +59,29 @@ fun AddCardScreen(
             CommonInputField(
                 label = stringResource(R.string.add_new_card_card_name),
                 placeholder = stringResource(R.string.add_new_card_card_placeholder),
-                currentValue = "",
+                currentValue = cardName,
                 inputType = InputType.Text,
-                onValueChange = {}
+                onValueChange = {
+                    cardName = it
+                }
             )
             CommonInputField(
                 label = "Cut of date",
                 placeholder = "Cut of date",
-                currentValue = "",
-                inputType = InputType.NumberPicker(IntRange(1, 30)),
-                onValueChange = {}
+                currentValue = cutOfDate,
+                inputType = InputType.Text,
+                onValueChange = {
+                    cutOfDate = it
+                }
             )
             CommonInputField(
                 label = "Payment due date",
                 placeholder = "Payment due date",
-                currentValue = "",
+                currentValue = paymentCutOfDate,
                 inputType = InputType.NumberPicker(IntRange(1, 31)),
-                onValueChange = {}
+                onValueChange = {
+                    paymentCutOfDate = it
+                }
             )
             Spacer(modifier = Modifier.height(16.dp))
             OutlinedButton(
@@ -70,7 +90,7 @@ fun AddCardScreen(
                         snackbarHostState.showSnackbar("No implemented")
                     }
                 },
-                enabled = false,
+                enabled = saveButtonEnabled,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
@@ -85,8 +105,7 @@ fun AddCardScreen(
 @Composable
 private fun PreviewAddCardScreen() {
     AddCardScreen(
-        onAction = {},
-        onCommit = {},
-        onCancel = {}
+        settingsState = SettingsState(),
+        onAction = {}
     )
 }
