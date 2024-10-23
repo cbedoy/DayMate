@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -13,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.cb.meapps.presentation.ui.DayMateContainer
 import com.cb.meapps.presentation.ui.theme.MeAppsTheme
+import com.cb.meapps.presentation.viewmodel.analytics.AnalyticsViewModel
 import com.cb.meapps.presentation.viewmodel.BureaucraticDocsViewModel
 import com.cb.meapps.presentation.viewmodel.FuelTrackerViewModel
 import com.cb.meapps.presentation.viewmodel.financial.ProjectionsViewModel
@@ -26,6 +26,7 @@ class MainActivity : ComponentActivity() {
     private val bureaucraticDocsViewModel: BureaucraticDocsViewModel by viewModels()
     private val projectionsViewModel: ProjectionsViewModel by viewModels()
     private val fuelTrackerViewModel: FuelTrackerViewModel by viewModels()
+    private val analyticsViewModel: AnalyticsViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,7 +50,8 @@ class MainActivity : ComponentActivity() {
                         fuelTrackerState,
                         onProjectionsAction = projectionsViewModel::dispatch,
                         onFuelTrackerAction = fuelTrackerViewModel::dispatch,
-                        onSettingsAction = settingsViewModel::dispatch
+                        onSettingsAction = settingsViewModel::dispatch,
+                        onTrackAnalytics = analyticsViewModel::dispatch
                     )
                 }
             }

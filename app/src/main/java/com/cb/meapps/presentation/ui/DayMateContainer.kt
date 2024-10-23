@@ -7,10 +7,14 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.cb.meapps.domain.analytics.DayMateState
 import com.cb.meapps.presentation.ui.screens.AddCardScreen
 import com.cb.meapps.presentation.ui.screens.AdditionalPaymentScreen
 import com.cb.meapps.presentation.ui.screens.CardPaymentCalendarScreen
@@ -23,6 +27,7 @@ import com.cb.meapps.presentation.ui.screens.MoneyMapScreen
 import com.cb.meapps.presentation.ui.screens.OnboardingScreen
 import com.cb.meapps.presentation.ui.screens.SettingsScreen
 import com.cb.meapps.presentation.ui.screens.TripPlannerScreen
+import com.cb.meapps.presentation.viewmodel.analytics.AnalyticsAction
 import com.cb.meapps.presentation.viewmodel.DocsState
 import com.cb.meapps.presentation.viewmodel.FuelTrackerAction
 import com.cb.meapps.presentation.viewmodel.FuelTrackerState
@@ -39,7 +44,8 @@ fun DayMateContainer(
     fuelTrackerState: FuelTrackerState,
     onProjectionsAction: (ProjectionsAction) -> Unit,
     onFuelTrackerAction: (FuelTrackerAction) -> Unit,
-    onSettingsAction: (SettingsAction) -> Unit
+    onSettingsAction: (SettingsAction) -> Unit,
+    onTrackAnalytics: (AnalyticsAction) -> Unit
 ) {
     val navController = rememberNavController()
 
@@ -62,6 +68,8 @@ fun DayMateContainer(
     } else {
         DayMateRoute.Onboarding.route
     }
+
+    TrackScreenStateIfNeeded(navController, onTrackAnalytics)
 
     NavHost(
         navController,
@@ -156,6 +164,23 @@ fun DayMateContainer(
             EditFuelTrackerScreen(
                 state = fuelTrackerState,
                 onAction = onFuelTrackerAction
+            )
+        }
+    }
+}
+
+@Composable
+private fun TrackScreenStateIfNeeded(
+    navController: NavController,
+    onTrackAnalytics: (AnalyticsAction) -> Unit
+) {
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    LaunchedEffect(navBackStackEntry) {
+        navBackStackEntry?.destination?.route?.let { currentRoute ->
+            onTrackAnalytics(
+                AnalyticsAction.TrackState(
+                    DayMateState.Screen(currentRoute)
+                )
             )
         }
     }
