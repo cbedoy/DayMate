@@ -7,9 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
@@ -20,24 +18,22 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.cb.meapps.R
-import com.cb.meapps.data.model.AdditionalPayment
-import com.cb.meapps.domain.fake.getFakeCards
-import com.cb.meapps.domain.model.Card
+import com.cb.meapps.domain.fake.getFakeAdditionalPayments
 import com.cb.meapps.presentation.ui.DayMateRoute
-import com.cb.meapps.presentation.ui.common.AdditionalPaymentItem
 import com.cb.meapps.presentation.ui.common.AdditionalPaymentSection
+import com.cb.meapps.presentation.ui.common.BodyMedium
+import com.cb.meapps.presentation.ui.common.BodyMediumLightPrimary
+import com.cb.meapps.presentation.ui.common.BodyMediumSemiBold
+import com.cb.meapps.presentation.ui.common.CardsSection
 import com.cb.meapps.presentation.ui.common.CommonInputField
 import com.cb.meapps.presentation.ui.common.DayMateScaffold
-import com.cb.meapps.presentation.ui.common.Header
 import com.cb.meapps.presentation.ui.common.InputType
+import com.cb.meapps.presentation.ui.common.TextButton
+import com.cb.meapps.presentation.ui.common.preview.SupportedDevicesPreview
 import com.cb.meapps.presentation.viewmodel.settings.SettingsAction
 import com.cb.meapps.presentation.viewmodel.settings.SettingsState
 
@@ -60,8 +56,9 @@ fun SettingsScreen(
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ){
             item {
-                Header(
+                BodyMedium(
                     "Ready to take control? Adjust your initial savings, interest rate, and biweekly payments to see your financial future shape up! Every tweak you make here helps DayMate keep your plans on point.",
+                    modifier = Modifier.padding(horizontal = 16.dp)
                 )
             }
             item {
@@ -109,9 +106,6 @@ fun SettingsScreen(
                 )
             }
             item {
-                LazyLaunchCta(onNavigationClicked)
-            }
-            item {
                 AdditionalPaymentSection(
                     settingsState.additionalPayments,
                     onDelete = {
@@ -120,50 +114,14 @@ fun SettingsScreen(
                 )
             }
             item {
-                SettingsCardHeadline(settingsState.cards) {
-                    onNavigationClicked(DayMateRoute.AddNewCard)
-                }
+                CardsSection(settingsState.cards)
             }
             item {
                 SettingsSwitchHeadline(false)
             }
-        }
-    }
-}
-
-@Composable
-private fun LazyLaunchCta(onNavigationClicked: (DayMateRoute) -> Unit) {
-    Column(
-        Modifier.fillMaxWidth().padding(16.dp),
-        Arrangement.spacedBy(8.dp)
-    ){
-        Text(
-            text = "Open your links bellow!",
-            style = MaterialTheme.typography.bodyMedium,
-            fontWeight = FontWeight.SemiBold,
-            color = MaterialTheme.colorScheme.primary
-        )
-        OutlinedButton({
-            onNavigationClicked(DayMateRoute.FinancialProjection)
-        }, Modifier
-            .fillMaxWidth()) {
-            Text(text = "Open Saving Journey")
-        }
-        OutlinedButton({
-            onNavigationClicked(DayMateRoute.CardPaymentCalendar)
-        }, Modifier
-            .fillMaxWidth()) {
-            Text(text = "Open Pay Day Calendar")
-        }
-        OutlinedButton({
-            onNavigationClicked(DayMateRoute.MoneyMap)
-        }, Modifier.fillMaxWidth()) {
-            Text(text = "Open Money Map")
-        }
-        OutlinedButton({
-            onNavigationClicked(DayMateRoute.AdditionalPayments)
-        }, Modifier.fillMaxWidth()) {
-            Text(text = "Additional Payments")
+            item {
+                SettingsEntryPoints(onNavigationClicked)
+            }
         }
     }
 }
@@ -189,11 +147,8 @@ private fun SettingsSwitchHeadline(checked: Boolean) {
                 .padding(horizontal = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Text(
+            BodyMediumLightPrimary(
                 text = "Turn on reminders to get notified before your due date and keep those pesky late fees away. With automatic alerts, you'll always be on top of your payments, and you'll even see a countdown so you know exactly how many days you have left. Stay worry-free and let us do the remembering for you! \uD83D\uDCC5\uD83D\uDD14",
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Light,
-                color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.weight(1.0f)
             )
             Switch(
@@ -201,138 +156,52 @@ private fun SettingsSwitchHeadline(checked: Boolean) {
                 onCheckedChange = { isChecked = it },
             )
         }
-
-
     }
 }
 
 @Composable
-private fun SettingsCardHeadline(cards: List<Card>, addNewCard: () -> Unit) {
-    Column {
-        val title = if (cards.isEmpty()) {
-            "No Cards Yet? Let's Fix That!"
-        } else {
-            "Your Cards Are Ready to Roll!"
-        }
-
-        val subtitle = if (cards.isEmpty()) {
-            "Add your first card, fill in the key details, and watch the magic happen! Say goodbye to forgotten due dates and hello to smooth sailing! \uD83D\uDCB3✨"
-        } else {
-            "You're all set! Your cards are organized and under control. Want to add another one? Keep everything in check and never miss a payment! \uD83D\uDCB3✅"
-        }
-
-        Column (
-            Modifier.padding(vertical = 16.dp),
-            Arrangement.spacedBy(16.dp)
-        ) {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.padding(horizontal = 16.dp)
-            )
-            Text(
-                text = subtitle,
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Light,
-                color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.padding(horizontal = 16.dp)
-            )
-            if (cards.isEmpty()) {
-                EmptyDataNoCards()
-            } else {
-                Column {
-                    cards.forEach {
-                        SettingsCardPreview(it)
-                    }
-                }
-            }
-            OutlinedButton(addNewCard,
-                Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)) {
-                Text(text = "Add card")
-            }
-        }
-    }
-}
-
-@Composable
-private fun EmptyDataNoCards() {
-    Text(
-        text = "No cards...",
-        style = MaterialTheme.typography.bodyLarge,
-        fontWeight = FontWeight.Light,
-        color = MaterialTheme.colorScheme.primary,
-        modifier = Modifier
+private fun SettingsEntryPoints(onNavigationClicked: (DayMateRoute) -> Unit) {
+    Column(
+        Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp),
-        textAlign = TextAlign.Center
-    )
-}
-
-@Composable
-private fun SettingsCardPreview(card: Card) {
-    Row(
-        Modifier.padding(horizontal = 16.dp),
-        Arrangement.Center,
-        Alignment.CenterVertically
-    ) {
-        Text(
-            text = card.name,
-            style = MaterialTheme.typography.headlineSmall,
-            fontWeight = FontWeight.Medium,
-            color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier
-                .weight(1.0f)
+            .padding(16.dp),
+        Arrangement.spacedBy(8.dp)
+    ){
+        BodyMediumSemiBold(
+            text = "Open your links bellow!"
         )
-        Column {
-            Text(
-                text = "Due date ${card.dueDate}",
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Light,
-                color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.padding(horizontal = 16.dp)
-            )
-            Text(
-                text = "Cut off date ${card.cutOffDate}",
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Light,
-                color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.padding(horizontal = 16.dp)
-            )
+        TextButton( "Open Saving Journey") {
+            onNavigationClicked(DayMateRoute.FinancialProjection)
         }
-        Icon(
-            painter = painterResource(id = R.drawable.baseline_navigate_next_24),
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary
-        )
+        TextButton( "Open Pay Day Calendar") {
+            onNavigationClicked(DayMateRoute.CardPaymentCalendar)
+        }
+        TextButton( "Open Money Map") {
+            onNavigationClicked(DayMateRoute.MoneyMap)
+        }
+        TextButton( "Add additional Payment") {
+            onNavigationClicked(DayMateRoute.AdditionalPayments)
+        }
+        TextButton( "Add card") {
+            onNavigationClicked(DayMateRoute.AddNewCard)
+        }
     }
 }
 
-@Preview
+@SupportedDevicesPreview
 @Composable
-private fun PreviewNoCardView() {
+private fun PreviewSettingsEntryPoints() {
     Surface {
-        Column {
-            SettingsCardHeadline(cards = emptyList(), {})
-            SettingsCardHeadline(cards = getFakeCards().take(1), {})
-            SettingsCardHeadline(cards = getFakeCards()) {}
-        }
+        SettingsEntryPoints {}
     }
 }
 
-@Preview
+@SupportedDevicesPreview
 @Composable
 private fun PreviewSettingsScreen() {
     SettingsScreen(
         settingsState = SettingsState(
-            additionalPayments = listOf(
-                AdditionalPayment("Tax return", 32, 1000f),
-                AdditionalPayment("Warranty return", 100, 500f),
-                AdditionalPayment("Family expense", 200, 800f)
-            )
+            additionalPayments = getFakeAdditionalPayments()
         ),
         onAction = {},
         onNavigationClicked = {}

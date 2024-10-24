@@ -38,8 +38,10 @@ import com.cb.meapps.domain.fake.getFakeTracks
 import com.cb.meapps.domain.model.FuelTracker
 import com.cb.meapps.domain.model.SummaryFullTracker
 import com.cb.meapps.domain.round
+import com.cb.meapps.presentation.ui.common.BodyMedium
+import com.cb.meapps.presentation.ui.common.BodyMediumLightPrimary
 import com.cb.meapps.presentation.ui.common.DayMateScaffold
-import com.cb.meapps.presentation.ui.common.Header
+import com.cb.meapps.presentation.ui.common.preview.SupportedDevicesPreview
 import com.cb.meapps.presentation.viewmodel.FuelTrackerState
 import kotlinx.coroutines.launch
 
@@ -73,7 +75,10 @@ fun FuelTrackerScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             item {
-                Header(text = "Track your journey, fuel costs, and discover how far your engine can go.")
+                BodyMedium(
+                    text = "Track your journey, fuel costs, and discover how far your engine can go.",
+                    Modifier.padding(horizontal = 16.dp)
+                )
             }
             item {
                 state.summaryFullTracker?.let {
@@ -81,11 +86,8 @@ fun FuelTrackerScreen(
                 }
             }
             item {
-                Text(
+                BodyMediumLightPrimary(
                     text = "Tracks",
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.Light,
-                    color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp)
@@ -201,7 +203,7 @@ private fun RowScope.FuelTrackerText(text: String, icon: Int) {
     }
 }
 
-@Preview
+@SupportedDevicesPreview
 @Composable
 private fun PreviewFuelTrackerScreen() {
 

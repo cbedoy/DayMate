@@ -3,6 +3,7 @@ package com.cb.meapps.di
 import android.app.Application
 import android.content.Context
 import androidx.room.Room
+import com.cb.meapps.data.dao.AdditionalPaymentDao
 import com.cb.meapps.data.dao.CardDao
 import com.cb.meapps.data.dao.DocumentDao
 import com.cb.meapps.data.dao.FuelTrackerDao
@@ -53,5 +54,10 @@ class AppModule {
     @Provides
     fun provideFuelTrackerDao(db: DayMateDatabase): FuelTrackerDao {
         return db.fuelTrackerDao()
+    }
+
+    @Provides
+    fun provideAdditionalPaymentDao(db: DayMateDatabase): AdditionalPaymentDao {
+        return db.additionalPaymentDao()
     }
 }

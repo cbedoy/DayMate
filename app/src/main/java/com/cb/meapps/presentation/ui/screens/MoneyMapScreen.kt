@@ -28,6 +28,7 @@ import com.cb.meapps.domain.model.CardPayment
 import com.cb.meapps.domain.model.CombinedProjection
 import com.cb.meapps.presentation.ui.common.DayMateScaffold
 import com.cb.meapps.presentation.ui.common.StickyHeaderView
+import com.cb.meapps.presentation.ui.common.preview.SupportedDevicesPreview
 import com.cb.meapps.presentation.viewmodel.financial.ProjectionsState
 
 @Composable
@@ -123,7 +124,7 @@ private fun RowScope.MoneyMapCardNameText(
     )
 }
 
-@Preview
+@SupportedDevicesPreview
 @Composable
 private fun PreviewMoneyMapItem() {
 
@@ -137,7 +138,7 @@ private fun PreviewMoneyMapItem() {
 }
 
 
-@Preview
+@SupportedDevicesPreview
 @Composable
 private fun PreviewMoneyMapScreen() {
     MoneyMapScreen(

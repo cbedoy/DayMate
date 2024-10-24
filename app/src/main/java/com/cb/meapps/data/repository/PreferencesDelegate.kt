@@ -2,9 +2,6 @@ package com.cb.meapps.data.repository
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.cb.meapps.data.model.AdditionalPayment
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -58,26 +55,6 @@ class PreferencesDelegate @Inject constructor(
         return getPreferences().getBoolean(SKIP_ONBOARDING, false)
     }
 
-    fun getAdditionalPayments(): List<AdditionalPayment> {
-        val gson = Gson()
-        val json = getPreferences().getString(ADDITIONAL_PAYMENTS_KEY, null) ?: return emptyList()
-        return try {
-            val type = object : TypeToken<List<AdditionalPayment>>() {}.type
-            gson.fromJson(json, type)
-        } catch (e: Exception) {
-            emptyList()
-        }
-    }
-
-    fun saveAdditionalPayments(additionalPayments: List<AdditionalPayment>) {
-        val editor = getPreferences().edit()
-        val gson = Gson()
-        val json = gson.toJson(additionalPayments)
-
-        editor.putString(ADDITIONAL_PAYMENTS_KEY, json)
-        editor.apply()
-    }
-
     companion object {
         private const val PREFERENCES_FILE_KEY = "com.cb.daymate"
         private const val INITIAL_SAVINGS_KEY = "initial_savings"
@@ -85,7 +62,5 @@ class PreferencesDelegate @Inject constructor(
         private const val PROJECTION_DAYS_COUNT_KEY = "projection_days_count"
         private const val BIWEEKLY_PAYMENT_KEY = "biweekly_payment"
         private const val SKIP_ONBOARDING = "skip_onboarding"
-        private const val ADDITIONAL_PAYMENTS_KEY = "additional_payments"
-
     }
 }

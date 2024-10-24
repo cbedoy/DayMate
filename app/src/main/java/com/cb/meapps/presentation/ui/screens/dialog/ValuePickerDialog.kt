@@ -13,7 +13,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import com.cb.meapps.presentation.ui.common.BodyMediumSemiBold
+import com.cb.meapps.presentation.ui.common.SmallPrimaryButton
+import com.cb.meapps.presentation.ui.common.SmallSecondaryButton
 import com.cb.meapps.presentation.ui.common.ValuePicker
+import com.cb.meapps.presentation.ui.common.preview.SupportedDevicesPreview
 
 @Composable
 fun ValuePickerDialog(
@@ -26,7 +31,7 @@ fun ValuePickerDialog(
 
     AlertDialog(
         onDismissRequest = { onDismiss() },
-        title = { Text("Pick a value") },
+        title = { BodyMediumSemiBold(text = "Pick a value") },
         text = {
             Column(
                 Modifier.fillMaxWidth(),
@@ -43,18 +48,25 @@ fun ValuePickerDialog(
             }
         },
         confirmButton = {
-            Button(
-                onClick = {
-                    onValueSelected(selectedValue)
-                }
-            ) {
-                Text("OK")
+            SmallPrimaryButton(text = "Select") {
+                onValueSelected(selectedValue)
             }
         },
         dismissButton = {
-            Button(onClick = { onDismiss() }) {
-                Text("Cancel")
+            SmallSecondaryButton(text = "Cancel") {
+                onDismiss()
             }
         }
+    )
+}
+
+@SupportedDevicesPreview
+@Composable
+private fun PreviewValuePickerDialog() {
+    ValuePickerDialog(
+        initialValue = 0,
+        values = listOf("Code", "Music", "Travel", "Drones"),
+        onDismiss = {},
+        onValueSelected = {}
     )
 }

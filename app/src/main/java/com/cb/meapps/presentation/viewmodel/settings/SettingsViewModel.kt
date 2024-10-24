@@ -2,17 +2,24 @@ package com.cb.meapps.presentation.viewmodel.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.cb.meapps.data.model.AdditionalPayment
+import com.cb.meapps.domain.model.AdditionalPayment
 import com.cb.meapps.data.repository.PreferencesDelegate
 import com.cb.meapps.domain.fake.getFakeCards
 import com.cb.meapps.domain.model.Card
 import com.cb.meapps.domain.usecase.AddNewCardUseCase
+import com.cb.meapps.domain.usecase.DeleteAdditionalPaymentUseCase
 import com.cb.meapps.domain.usecase.GenerateDaysUseCase
+import com.cb.meapps.domain.usecase.GetAdditionalPaymentsUseCase
 import com.cb.meapps.domain.usecase.GetCardsUseCase
+import com.cb.meapps.domain.usecase.SaveAdditionalPaymentUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -23,7 +30,10 @@ class SettingsViewModel @Inject constructor(
     private val preferencesDelegate: PreferencesDelegate,
     private val addNewCardUseCase: AddNewCardUseCase,
     private val getCardsUseCase: GetCardsUseCase,
-    private val generateDaysUseCase: GenerateDaysUseCase
+    private val getAdditionalPaymentsUseCase: GetAdditionalPaymentsUseCase,
+    private val generateDaysUseCase: GenerateDaysUseCase,
+    private val saveAdditionalPaymentUseCase: SaveAdditionalPaymentUseCase,
+    private val deleteAdditionalPaymentUseCase: DeleteAdditionalPaymentUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(
@@ -33,7 +43,6 @@ class SettingsViewModel @Inject constructor(
             biweeklyPayment = preferencesDelegate.getBiweeklyPayment(),
             skipOnboarding = preferencesDelegate.isSkipOnboarding(),
             projectionDays = preferencesDelegate.getProjectionDays(),
-            additionalPayments = preferencesDelegate.getAdditionalPayments(),
             days = generateDaysUseCase.invoke()
         )
     )
@@ -41,11 +50,17 @@ class SettingsViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            getCardsUseCase().collect { cards ->
+            val getCardsFlow = getCardsUseCase()
+            val getAdditionalPaymentFlow = getAdditionalPaymentsUseCase()
+
+            getCardsFlow.combine(getAdditionalPaymentFlow) { cards, additionalPayments ->
                 _state.update { currentState ->
-                    currentState.copy(cards = cards)
+                    currentState.copy(
+                        cards = cards,
+                        additionalPayments = additionalPayments
+                    )
                 }
-            }
+            }.launchIn(viewModelScope)
         }
     }
 
@@ -91,34 +106,13 @@ class SettingsViewModel @Inject constructor(
                 }
             }
             is SettingsAction.SaveAdditionalPayment -> {
-                val additionalPayments = _state.value.additionalPayments.toMutableList()
-                additionalPayments.add(
-                    AdditionalPayment(
-                        name = action.name,
-                        day = action.day,
-                        value = action.value
-                    )
-                )
-                preferencesDelegate.saveAdditionalPayments(additionalPayments)
-
-                val newAdditionalPayments = preferencesDelegate.getAdditionalPayments()
-                _state.update { currentState ->
-                    currentState.copy(
-                        additionalPayments = newAdditionalPayments
-                    )
+                viewModelScope.launch(Dispatchers.IO) {
+                    saveAdditionalPaymentUseCase(action.name, action.day, action.value)
                 }
             }
             is SettingsAction.DeleteAdditionalPayment -> {
-                val additionalPayments = _state.value.additionalPayments.toMutableList()
-                val items = additionalPayments.filter { it.name != action.name }
-
-                preferencesDelegate.saveAdditionalPayments(items)
-
-                val newAdditionalPayments = preferencesDelegate.getAdditionalPayments()
-                _state.update { currentState ->
-                    currentState.copy(
-                        additionalPayments = newAdditionalPayments
-                    )
+                viewModelScope.launch(Dispatchers.IO) {
+                    deleteAdditionalPaymentUseCase(action.name)
                 }
             }
         }

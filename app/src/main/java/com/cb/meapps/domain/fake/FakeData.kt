@@ -1,6 +1,6 @@
 package com.cb.meapps.domain.fake
 
-import com.cb.meapps.data.model.AdditionalPayment
+import com.cb.meapps.domain.model.AdditionalPayment
 import com.cb.meapps.domain.model.Card
 import com.cb.meapps.domain.model.CardPayment
 import com.cb.meapps.domain.model.CombinedProjection
@@ -22,7 +22,7 @@ fun getFakeTracks(): List<FuelTracker> {
         FuelTracker(id = 1, totalKM = 560f, totalPrice = 988f, liters = 40f),
         FuelTracker(id = 2, totalKM = 550f, totalPrice = 1000f, liters = 42.5f),
         FuelTracker(id = 3, totalKM = 120f, totalPrice = 200f, liters = 8.1f),
-        FuelTracker(id = 4, totalKM = 347f, totalPrice = 1000f, liters = 42.3f),
+        FuelTracker(id = 4, totalKM = 450f, totalPrice = 1000f, liters = 42.3f),
     )
 }
 
@@ -137,8 +137,8 @@ fun getFakeCombinedProjections(): List<CombinedProjection> {
 
 fun getFakeAdditionalPayments(): List<AdditionalPayment> {
     return listOf(
-        AdditionalPayment("Tax return", 32, 1000f),
-        AdditionalPayment("Warranty return", 100, 500f),
-        AdditionalPayment("Family expense", 200, 800f)
+        AdditionalPayment(1, "Tax return", 32, 1000f),
+        AdditionalPayment(2, "Warranty return", 100, 500f),
+        AdditionalPayment(3,"Family expense", 200, 800f)
     )
 }

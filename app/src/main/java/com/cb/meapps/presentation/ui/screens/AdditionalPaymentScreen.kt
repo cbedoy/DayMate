@@ -1,12 +1,8 @@
 package com.cb.meapps.presentation.ui.screens
 
-
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -22,6 +18,8 @@ import com.cb.meapps.presentation.ui.common.AdditionalPaymentSection
 import com.cb.meapps.presentation.ui.common.CommonInputField
 import com.cb.meapps.presentation.ui.common.DayMateScaffold
 import com.cb.meapps.presentation.ui.common.InputType
+import com.cb.meapps.presentation.ui.common.SecondaryButton
+import com.cb.meapps.presentation.ui.common.preview.SupportedDevicesPreview
 import com.cb.meapps.presentation.viewmodel.settings.SettingsAction
 import com.cb.meapps.presentation.viewmodel.settings.SettingsState
 
@@ -74,20 +72,14 @@ fun AdditionalPaymentScreen(
                     amount = it
                 }
             )
-            OutlinedButton(
-                onClick = {
-                    onAction(
-                        SettingsAction.SaveAdditionalPayment(
-                            name = name,
-                            day = settingsState.days.safeIndexOf(day),
-                            value = amount.toFloatOrZero()
-                        )
+            SecondaryButton(text = "Save", enabled = confirmationButtonVisible) {
+                onAction(
+                    SettingsAction.SaveAdditionalPayment(
+                        name = name,
+                        day = settingsState.days.safeIndexOf(day),
+                        value = amount.toFloatOrZero()
                     )
-                },
-                modifier = Modifier.padding(horizontal = 16.dp).fillMaxWidth(),
-                enabled = confirmationButtonVisible
-            ) {
-                Text(text = "Save")
+                )
             }
             AdditionalPaymentSection(settingsState.additionalPayments) {
                 onAction(SettingsAction.DeleteAdditionalPayment(it.name))
@@ -100,7 +92,7 @@ private fun List<String>.safeIndexOf(value: String): Int {
     return if (!this.contains(value)) 0 else indexOf(value)
 }
 
-@Preview
+@SupportedDevicesPreview
 @Composable
 private fun PreviewAdditionalPaymentScreen() {
     AdditionalPaymentScreen(
@@ -108,7 +100,7 @@ private fun PreviewAdditionalPaymentScreen() {
     ) {}
 }
 
-@Preview
+@SupportedDevicesPreview
 @Composable
 private fun PreviewAdditionalPaymentScreenWithData() {
     AdditionalPaymentScreen(

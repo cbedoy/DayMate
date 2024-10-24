@@ -18,16 +18,17 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cb.meapps.R
+import com.cb.meapps.domain.toFloatOrZero
+import com.cb.meapps.domain.toIntOrZero
+import com.cb.meapps.presentation.ui.common.BodyMedium
 import com.cb.meapps.presentation.ui.common.CommonInputField
 import com.cb.meapps.presentation.ui.common.DayMateScaffold
-import com.cb.meapps.presentation.ui.common.Header
 import com.cb.meapps.presentation.ui.common.InputType
+import com.cb.meapps.presentation.ui.common.preview.SupportedDevicesPreview
 import com.cb.meapps.presentation.viewmodel.settings.SettingsAction
 import com.cb.meapps.presentation.viewmodel.settings.SettingsState
-import kotlinx.coroutines.launch
 
 @Composable
 fun AddCardScreen(
@@ -40,10 +41,11 @@ fun AddCardScreen(
     var cardName by remember { mutableStateOf("") }
     var cutOfDate by remember { mutableStateOf("") }
     var paymentCutOfDate by remember { mutableStateOf("") }
+    var debt by remember { mutableStateOf("") }
 
     val saveButtonEnabled by remember {
         derivedStateOf {
-            cardName.isNotEmpty() && cutOfDate.isNotEmpty() && paymentCutOfDate.isNotEmpty()
+            cardName.isNotEmpty() && cutOfDate.isNotEmpty() && paymentCutOfDate.isNotEmpty() && debt.isNotEmpty()
         }
     }
 
@@ -55,7 +57,10 @@ fun AddCardScreen(
             Modifier.padding(paddingValues),
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            Header(text = stringResource(R.string.add_new_card_header))
+            BodyMedium(
+                text = stringResource(R.string.add_new_card_header),
+                Modifier.padding(horizontal = 16.dp)
+            )
             CommonInputField(
                 label = stringResource(R.string.add_new_card_card_name),
                 placeholder = stringResource(R.string.add_new_card_card_placeholder),
@@ -69,7 +74,7 @@ fun AddCardScreen(
                 label = "Cut of date",
                 placeholder = "Cut of date",
                 currentValue = cutOfDate,
-                inputType = InputType.Text,
+                inputType =  InputType.NumberPicker(IntRange(1, 31)),
                 onValueChange = {
                     cutOfDate = it
                 }
@@ -83,12 +88,24 @@ fun AddCardScreen(
                     paymentCutOfDate = it
                 }
             )
+            CommonInputField(
+                label = "Debt",
+                placeholder = "Debt",
+                currentValue = debt,
+                inputType = InputType.Decimal,
+                onValueChange = {
+                    debt = it
+                }
+            )
             Spacer(modifier = Modifier.height(16.dp))
             OutlinedButton(
                 onClick = {
-                    scope.launch {
-                        snackbarHostState.showSnackbar("No implemented")
-                    }
+                    onAction(SettingsAction.AddNewCard(
+                        name = cardName,
+                        cutOffDate = cutOfDate.toIntOrZero(),
+                        dueDate = paymentCutOfDate.toIntOrZero(),
+                        debt = debt.toFloatOrZero()
+                    ))
                 },
                 enabled = saveButtonEnabled,
                 modifier = Modifier
@@ -101,7 +118,7 @@ fun AddCardScreen(
     }
 }
 
-@Preview
+@SupportedDevicesPreview
 @Composable
 private fun PreviewAddCardScreen() {
     AddCardScreen(

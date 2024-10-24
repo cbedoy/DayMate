@@ -24,6 +24,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cb.meapps.presentation.ui.DayMateRoute
+import com.cb.meapps.presentation.ui.common.HeadlineMediumBlack
+import com.cb.meapps.presentation.ui.common.HeadlineSmallLight
+import com.cb.meapps.presentation.ui.common.preview.SupportedDevicesPreview
 import kotlinx.coroutines.launch
 
 @Composable
@@ -101,18 +104,8 @@ private fun OnboardingPage(page: OnboardingPage) {
         Column(
             Modifier.fillMaxWidth()
         ) {
-            Text(
-                text = page.title,
-                style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.Black,
-                color = MaterialTheme.colorScheme.primary
-            )
-            Text(
-                text = page.subtitle,
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Light,
-                color = MaterialTheme.colorScheme.secondary
-            )
+            HeadlineMediumBlack(text = page.title)
+            HeadlineSmallLight(text = page.subtitle)
         }
     }
 }
@@ -143,7 +136,7 @@ private fun buildPages(): List<OnboardingPage> {
     )
 }
 
-@Preview
+@SupportedDevicesPreview
 @Composable
 private fun PreviewOnboardingPage() {
     Surface {
@@ -151,7 +144,7 @@ private fun PreviewOnboardingPage() {
     }
 }
 
-@Preview
+@SupportedDevicesPreview
 @Composable
 private fun PreviewOnboardingScreen() {
     Surface {

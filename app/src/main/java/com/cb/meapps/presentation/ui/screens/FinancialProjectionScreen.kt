@@ -32,6 +32,7 @@ import com.cb.meapps.domain.model.ProjectionDay
 import com.cb.meapps.domain.toDoubleOrZero
 import com.cb.meapps.presentation.ui.common.DayMateScaffold
 import com.cb.meapps.presentation.ui.common.StickyHeaderView
+import com.cb.meapps.presentation.ui.common.preview.SupportedDevicesPreview
 import com.cb.meapps.presentation.viewmodel.financial.ProjectionsAction
 import com.cb.meapps.presentation.viewmodel.financial.ProjectionsState
 import com.cb.meapps.presentation.viewmodel.settings.SettingsState
@@ -124,7 +125,7 @@ private fun ProjectionRowDivider(projectionDay: ProjectionDay) {
     }
 }
 
-@Preview
+@SupportedDevicesPreview
 @Composable
 private fun PreviewProjectionRow() {
     Surface {
@@ -160,7 +161,7 @@ private fun PreviewProjectionRow() {
     }
 }
 
-@Preview
+@SupportedDevicesPreview
 @Composable
 fun PreviewFinancialProjection() {
     Surface {

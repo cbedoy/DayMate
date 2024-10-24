@@ -32,7 +32,10 @@ import androidx.compose.ui.unit.dp
 import com.cb.meapps.domain.asMoney
 import com.cb.meapps.domain.model.Trip
 import com.cb.meapps.domain.model.getFakeTrips
+import com.cb.meapps.presentation.ui.common.BodyMediumBold
+import com.cb.meapps.presentation.ui.common.BodyMediumLightPrimary
 import com.cb.meapps.presentation.ui.common.DayMateScaffold
+import com.cb.meapps.presentation.ui.common.preview.SupportedDevicesPreview
 import kotlinx.coroutines.launch
 
 @Composable
@@ -95,18 +98,8 @@ fun TripView(trip: Trip) {
             Arrangement.Center,
             Alignment.CenterHorizontally
         ) {
-            Text(
-                "Total".uppercase(),
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
-            )
-            Text(
-                trip.expenses.map { it.amount }.sum().asMoney(),
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Light,
-                color = MaterialTheme.colorScheme.primary
-            )
+            BodyMediumBold("Total".uppercase())
+            BodyMediumLightPrimary(trip.expenses.map { it.amount }.sum().asMoney())
         }
         Column(
             Modifier
@@ -121,23 +114,17 @@ fun TripView(trip: Trip) {
             Arrangement.Center,
             Alignment.Start
         ) {
-            Text(
-                trip.name.uppercase(),
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
+            BodyMediumBold(
+                trip.name.uppercase()
             )
-            Text(
+            BodyMediumLightPrimary(
                 "Divided into ${trip.members.size} equals parts by ${trip.expenses.map { it.amount }.sum().div(trip.members.size).asMoney()} each",
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Normal,
-                color = MaterialTheme.colorScheme.primary
             )
         }
     }
 }
 
-@Preview
+@SupportedDevicesPreview
 @Composable
 private fun PreviewTripPlannerScreen() {
     TripPlannerScreen()

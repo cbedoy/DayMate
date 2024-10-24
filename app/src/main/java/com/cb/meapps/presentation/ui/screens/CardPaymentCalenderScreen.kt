@@ -22,19 +22,17 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cb.meapps.R
 import com.cb.meapps.domain.fake.getFakeCards
 import com.cb.meapps.domain.model.Card
+import com.cb.meapps.presentation.ui.common.BodySmall
 import com.cb.meapps.presentation.ui.common.DayMateScaffold
 import com.cb.meapps.presentation.ui.common.StickyHeaderView
+import com.cb.meapps.presentation.ui.common.preview.SupportedDevicesPreview
 import com.cb.meapps.presentation.viewmodel.financial.ProjectionsAction
 import com.cb.meapps.presentation.viewmodel.financial.ProjectionsState
 import com.cb.meapps.presentation.viewmodel.settings.SettingsState
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
 
 @Composable
 fun CardPaymentCalendarScreen(
@@ -123,12 +121,12 @@ fun PaymentItem(date: String, cardsDueToday: List<Card>) {
                 color = MaterialTheme.colorScheme.onPrimary
             )
         } else {
-            Text(text = stringResource(R.string.card_payment_calendar_no_payments_due), style = MaterialTheme.typography.bodySmall)
+            BodySmall(text = stringResource(R.string.card_payment_calendar_no_payments_due))
         }
     }
 }
 
-@Preview
+@SupportedDevicesPreview
 @Composable
 private fun PreviewCardPaymentCalenderScreen() {
     CardPaymentCalendarScreen(

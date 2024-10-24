@@ -10,6 +10,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -69,11 +70,38 @@ fun DayMateContainer(
         DayMateRoute.Onboarding.route
     }
 
-    TrackScreenStateIfNeeded(navController, onTrackAnalytics)
+    TrackScreenState(navController, onTrackAnalytics)
 
-    NavHost(
-        navController,
+    DayMateNavGraph(
+        navController = navController,
         startDestination = initialRoute,
+        settingsState = settingsState,
+        docsState = docsState,
+        projectionsState = projectionsState,
+        fuelTrackerState = fuelTrackerState,
+        onProjectionsAction = onProjectionsAction,
+        onFuelTrackerAction = onFuelTrackerAction,
+        onSettingsAction = onSettingsAction,
+        onNavigationClicked = onNavigationClicked
+    )
+}
+
+@Composable
+private fun DayMateNavGraph(
+    navController: NavHostController,
+    startDestination: String,
+    settingsState: SettingsState,
+    docsState: DocsState,
+    projectionsState: ProjectionsState,
+    fuelTrackerState: FuelTrackerState,
+    onProjectionsAction: (ProjectionsAction) -> Unit,
+    onFuelTrackerAction: (FuelTrackerAction) -> Unit,
+    onSettingsAction: (SettingsAction) -> Unit,
+    onNavigationClicked: (DayMateRoute) -> Unit
+) {
+    NavHost(
+        navController = navController,
+        startDestination = startDestination,
         enterTransition = { provideEnterTransition() },
         exitTransition = { provideExitTransition() },
         popEnterTransition = { providePopEnterTransition() },
@@ -170,18 +198,14 @@ fun DayMateContainer(
 }
 
 @Composable
-private fun TrackScreenStateIfNeeded(
+private fun TrackScreenState(
     navController: NavController,
     onTrackAnalytics: (AnalyticsAction) -> Unit
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     LaunchedEffect(navBackStackEntry) {
         navBackStackEntry?.destination?.route?.let { currentRoute ->
-            onTrackAnalytics(
-                AnalyticsAction.TrackState(
-                    DayMateState.Screen(currentRoute)
-                )
-            )
+            onTrackAnalytics(AnalyticsAction.TrackState(DayMateState.Screen(currentRoute)))
         }
     }
 }
@@ -203,17 +227,15 @@ sealed class DayMateRoute(val route: String) {
 
 private const val FuelTrackerIdKey = "{fuelTrackerId}"
 
-fun provideEnterTransition(): EnterTransition {
-    return slideInHorizontally(initialOffsetX = { 1000 }, animationSpec = tween(500))
+fun slideInTransition(initialOffsetX: Int): EnterTransition {
+    return slideInHorizontally(initialOffsetX = { initialOffsetX }, animationSpec = tween(500))
 }
 
-fun provideExitTransition(): ExitTransition {
-    return slideOutHorizontally(targetOffsetX = { -1000 }, animationSpec = tween(500))
+fun slideOutTransition(targetOffsetX: Int): ExitTransition {
+    return slideOutHorizontally(targetOffsetX = { targetOffsetX }, animationSpec = tween(500))
 }
 
-fun providePopEnterTransition(): EnterTransition {
-    return slideInHorizontally(initialOffsetX = { -1000 }, animationSpec = tween(500))
-}
-fun providePopExitTransition(): ExitTransition {
-    return slideOutHorizontally(targetOffsetX = { 1000 }, animationSpec = tween(500))
-}
+fun provideEnterTransition() = slideInTransition(1000)
+fun provideExitTransition() = slideOutTransition(-1000)
+fun providePopEnterTransition() = slideInTransition(-1000)
+fun providePopExitTransition() = slideOutTransition(1000)

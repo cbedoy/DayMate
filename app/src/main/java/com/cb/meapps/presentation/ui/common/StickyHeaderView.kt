@@ -17,6 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.cb.meapps.presentation.ui.common.preview.SupportedDevicesPreview
 
 @Composable
 fun StickyHeaderView(
@@ -54,7 +55,7 @@ private fun RowScope.StickyHeaderViewText(text: String, textSize: TextUnit) {
     )
 }
 
-@Preview
+@SupportedDevicesPreview
 @Composable
 private fun PreviewStickyHeaderView() {
     Surface {

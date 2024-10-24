@@ -10,13 +10,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.cb.meapps.presentation.ui.common.preview.SupportedDevicesPreview
 
 @Composable
 internal fun CreditView() {
@@ -29,15 +29,18 @@ internal fun CreditView() {
         }
     ) {
         Box(modifier = Modifier.fillMaxWidth().height(1.dp).background(Color.Black.copy(alpha = 0.2f)))
-        Text(
+        BodyMedium(
             text = "Made with ❤\uFE0F\uD83C\uDF2E by Carlos Bedoy",
             Modifier
                 .background(MaterialTheme.colorScheme.onPrimary)
                 .fillMaxWidth()
-                .padding(16.dp),
-            style = MaterialTheme.typography.bodyMedium,
-            fontWeight = FontWeight.SemiBold,
-            color = MaterialTheme.colorScheme.primary,
+                .padding(16.dp)
         )
     }
+}
+
+@SupportedDevicesPreview
+@Composable
+private fun PreviewCreditView() {
+    CreditView()
 }

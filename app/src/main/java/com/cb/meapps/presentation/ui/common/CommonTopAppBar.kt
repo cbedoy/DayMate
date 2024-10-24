@@ -6,12 +6,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import com.cb.meapps.presentation.ui.common.preview.SupportedDevicesPreview
 
 @Composable
 fun CommonTopAppBar(title: String) {
@@ -21,17 +20,12 @@ fun CommonTopAppBar(title: String) {
             titleContentColor = MaterialTheme.colorScheme.primary,
         ),
         title = {
-            Text(
-                title,
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.primary
-            )
+            BodyMedium(title)
         }
     )
 }
 
-@Preview
+@SupportedDevicesPreview
 @Composable
 private fun PreviewCommonTopAppBar() {
     Surface {
